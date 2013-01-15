@@ -1,0 +1,145 @@
+* Reading:
+
+    Think Like A Computer Scientist, Chapter 15:
+    http://www.greenteapress.com/thinkpython/html/thinkpython016.html
+
+    Python class tutorial, sections 9.2 - 9.4
+    http://docs.python.org/2/tutorial/classes.html
+
+    OPTIONAL: read section 9.1 from the above tutorial.
+
+
+* Git Tutorial
+
+    To brush up and reinforce your git skills, go to http://try.github.com/ and
+    go through the whole tutorial.  Make liberal use of 'git status' to see
+    what's going on.  Also, the "advice" panel in the lower right also has a
+    lot of extremely useful things to say.
+
+    It will ask if you want to create a Code School account to save your
+    progress.  You are certainly welcome to, but the whole thing should take
+    less than an hour, so it's by no means necessary.
+
+    At some point, this will prompt you to create a github account if you don't
+    already have one.  This I would recommend doing.  If you want to follow
+    Naomi and enne, you can look at https://github.com/sixolet and
+    https://github.com/quisquous, respectively.
+
+
+* Practice asking a question
+
+    Send an email to info@transcodesf.org asking Naomi and enne a question
+    about programming, either about classes and objects, about this assignment,
+    or about something you want to know more about.
+
+    We're not kidding.
+
+
+* Boxing with classes
+
+    In geometry.py, create a class called Box.  This class represents a
+    2D box.  If you were writing a 2D game, you could use something exactly
+    like this to represent Mario's location and size on screen and test if it
+    collided with a goomba.  If you were writing a web browser, you could use
+    something like this to represent the location and size of a image so you
+    knew where to put it.
+
+    First off, this Box class should have a constructor (i.e. __init__
+    function) that takes four arguments: x, y, width, and height.  x and y are
+    the upper left corner of the box.  width and height are how far right and
+    down the box extends.
+
+    You should be able to construct a Box like this:
+
+        >>> b = Box(2, 3, 8, 4)
+
+    ...b now represents the following 2D box, with each of its corners labeled.
+
+        (2, 3)     (10, 3)
+            +-------+
+            |       |
+            |       |
+            +-------+
+        (2, 7)     (10, 7)
+
+    Box should also support the following methods and behave like this:
+
+        >>> b.left()
+        2
+        >>> b.right()
+        10
+        >>> b.top()
+        2
+        >>> b.bottom()
+        7
+        >>> print b
+        (2, 3) => (10, 7)
+        >>> print b.area()
+        32
+
+    Once you get that working, the goal is to be able to check whether two boxes
+    intersect and then what the box is that represents that intersection.
+
+    Add a 'def is_intersecting(self, other)' function to your Box class.  It
+    should return a boolean true or false whether or not these two Boxes
+    overlap in space.  For instance:
+
+        >>> b1 = Box(0, 0, 10, 10)
+        >>> b2 = Box(10, 4, 2, 3)
+        >>> b3 = Box(-5, 5, 7, 3)
+        >>> empty = Box(5, 5, 0, 0)
+        >>> b1.is_intersecting(b2)  # adjacent boxes are not intersecting
+        False
+        >>> b2.is_intersecting(b3)
+        False
+        >>> b1.is_intersecting(b3)
+        True
+        >>> b1.is_intersecting(empty)  # empty boxes don't intersect anything
+        False
+
+    Finally, add a 'def intersect(self, other)' function to your Box class.
+    This will take the current box and intersect it with some other box,
+    leaving the current box set to the intersection of the two boxes.
+
+        >>> b1 = Box(0, 0, 10, 10)
+        >>> b2 = Box(2, 3, 20, 6)
+        >>> b3 = Box(10, 12, 3, 4)
+        >>> b1.intersect(b2)
+        >>> print b1
+        (2, 3) => (10, 9)
+        >>> print b2  # b2 is unchanged
+        (2, 3) => (22, 9)
+        >>> b2.intersect(b3)
+        >>> print b2.area()  # The x,y location of b2 are not important
+        0
+
+
+* OPTIONAL: Add exceptions to the box class
+
+    Nobody wants boxes with negative widths or heights!  That's just lunacy.
+
+    Raise a ValueError exception if anybody tries to misuse your box class
+    and passes in a negative width or height.
+
+
+* OPTIONAL: Write a unit test for the box class
+
+    Create a geometry_test.py file.  (Remember to 'git add' it!)
+
+    In this file, add a unit test to test the __init__, area, and intersect
+    functions of your box class.  If you forget how to write unit tests,
+    consult this doc: http://docs.python.org/2/library/unittest.html
+
+    Consider writing (at least!) following test cases:
+
+        * Initializing a box to certain values sets the attributes appropriately
+        * Area of a box with non-zero width and non-zero height
+        * Area of a box with zero width
+        * Area of a box with zero height
+        * Area of a box with zero width and zero height
+        * Intersecting two non-intersecting boxes
+        * Intersecting a box that contains the other box
+        * Intersecting a box that's exactly equal to another box
+        * Intersections with empty boxes
+
+    What other functions haven't been tested?  Test those too.
