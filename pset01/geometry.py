@@ -7,6 +7,8 @@ class  Box:
         parsedy = False
         parsedwid = False
         parsedhei = False
+        poswid = False
+        poshei = False
         while parsedx == False:
             try:
                 self.x = int(x)
@@ -37,6 +39,20 @@ class  Box:
             except ValueError:
                 print "Invalid value for height!"
                 height = raw_input("Please enter a positive integer for height:")
+        if width >= 0:
+            pass
+        else:
+            print "Width must be a positive value! Converting to a positive value..."
+            width = width * -1
+            print "Width value was -" + str(width) + ", now it is " + str(width) + '.'
+            pass
+        if height >= 0:
+            pass
+        else:
+            print "Height must be a positive value! Converting to a positive value..."
+            height = height * -1
+            print "Width value was -" + str(height) + ", now it is " + str(height) + "."
+            pass
         print "Box " + str(self) + " created."
 
     def top(self):
