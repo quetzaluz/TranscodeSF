@@ -1,0 +1,96 @@
+As this class goes on, some of the assignments may become more and more open-ended.
+
+This is the first of the open-ended assignments.
+
+OVERVIEW:
+
+Your task: Use what you've learned about object-oriented programming to create a
+small text adventure game. In the game, you are a character with an inventory of
+items.  Each item has a name, that you can use to refer to it in commands.
+You're also in a room, which may connect to other rooms.
+
+Commands you should support:
+
+> look
+Tells you what your surroundings are.  Example:
+
+> look
+
+You are in a room.  It is damp here.
+There is a key on the floor.
+There is a lamp on the floor.
+There is a door to the north.
+
+> go <direction>
+Moves the player character in the given cardinal direction, if possible, then
+prints the new result of the 'look' command.  Example:
+
+> go south
+There is not a door to the south.
+> go north
+You enter the door to the north.
+You are in a room.
+It is bright here.
+There is a bottle on the floor.
+There is a door to the south.
+
+> take <item>
+Takes an item from the room and puts it in your inventory.  Example:
+
+> take bottle
+You now have a bottle.
+> take key
+There is no key in this room.
+
+> drop <item>
+Takes an item from your inventory and drops it in the current room.  Example:
+
+> drop bottle
+You drop the bottle on the floor.
+
+> leave
+Leaves the game.  Example:
+
+> leave
+Bye!
+gobo:~ naomi$
+
+STEP 1:
+
+No coding yet!  Answer the following questions, in this file:
+
+* What are the kinds of objects in this game universe?
+
+* What kind of methods and fields might you put on those objects?
+
+* How might you represent the relationship of rooms to other rooms?
+
+* Describe in words how you might implement the "take" command.
+
+Before you go on, email your answers to Naomi and Enne.  We'll comment on what
+you've said as fast as we can.  This is mostly a check to make sure you're on a
+decent track -- we know this assignment is a lot more open-ended than the
+previous one.
+
+STEP 2:
+
+Build enough of your system (maybe a couple classes and a loop to interperet
+text) so that you can construct (in your code) three or four rooms, and wander
+between them.
+
+STEP 3:
+
+Build enough of your system so that you can pick up items and put them down.
+Populate your rooms with some items!
+
+OPTIONAL PARTS:
+
+* Make some other entity that moves around, takes things, and puts things down
+  in some random way, every time you do.
+
+* Allow certain items to be "used" or "used on" other items. Example:
+
+> use paint on bottle.
+The bottle is now blue.
+
+* Whatever else your creative mind imagines.
