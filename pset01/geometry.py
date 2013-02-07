@@ -1,60 +1,55 @@
-import numbers
-    #### This is a work in progress!!! ####
 class  Box:
     def __init__(self, x, y, width, height):
-    # The try/except below ensures that only integer values are used.  
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        Box.check_box(self)
+    def check_box(self):
         parsedx = False
         parsedy = False
         parsedwid = False
         parsedhei = False
-        poswid = False
-        poshei = False
         while parsedx == False:
             try:
-                self.x = int(x)
+                self.x = int(self.x)
                 parsedx = True
             except ValueError:
                 print "Invalid value for x!"
-                x = raw_input("Please enter an integer for x:")
+                self.x = raw_input("Please enter an integer for x:")
             else:
                 break
         while parsedy == False:
             try:
-                self.y = int(y)
+                self.y = int(self.y)
                 parsedy = True
             except ValueError:
                 print "Invalid value for y!"
-                y = raw_input("Please enter an integer for y:")
+                self.y = raw_input("Please enter an integer for y:")
         while parsedwid == False:
             try:
-                self.width = int(width)
+                self.width = int(self.width)
                 parsedwid = True
             except ValueError:
                 print "Invalid value for width!"
-                width = raw_input("Please enter a positive integer for width:")
+                self.width = raw_input("Please enter a positive integer for width:")
+            if self.width < 0:
+                print "Width must be a positive value! Converting to a positive value..."
+                self.width = self.width * -1
+                print "Width value was -" + str(self.width) + ", now it is " + str(self.width) + '.'
         while parsedhei == False:
             try:
-                self.height = int(height)
+                self.height = int(self.height)
                 parsedhei = True
             except ValueError:
                 print "Invalid value for height!"
-                height = raw_input("Please enter a positive integer for height:")
-        if width >= 0:
-            pass
-        else:
-            print "Width must be a positive value! Converting to a positive value..."
-            width = width * -1
-            print "Width value was -" + str(width) + ", now it is " + str(width) + '.'
-            pass
-        if height >= 0:
-            pass
-        else:
-            print "Height must be a positive value! Converting to a positive value..."
-            height = height * -1
-            print "Width value was -" + str(height) + ", now it is " + str(height) + "."
-            pass
+                self.height = raw_input("Please enter a positive integer for height:")
+            if self.height < 0:
+                print "Height must be a positive value! Converting to a positive value..."
+                self.height = self.height * -1
+                print "Width value was -" + str(self.height) + ", now it is " + str(self.height) + "."
         print "Box " + str(self) + " created."
-
+    
     def top(self):
         return self.y
     
