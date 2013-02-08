@@ -2,6 +2,8 @@ import sys
 
 room01 = Room("A Prison Cell", "You are in a damp cell that is filled with the stench of unwashed human bodies. There are strange stains over the concrete floor. Your only light source is a flickering incandescent bulb screwed within a grate covered aluminum fixture.")
 room02 = Room("A Hallway Lined with Cells", "You are in a long hallway lined with solid, windowless doors, each apparently leading to a cell. The hallway stretches to the east and west and the cell you emerged from is to the south.")
+room03 = Room("East End of the Hallway", "You are at the eastern end of the cell lined hallway. The hallway leads to a dead end--it appears there is no way to exit the hallway from here.")
+room04 = Room("West End of the Hallway", "You are at the western end of the hallway. Besides the numerous cell doors to the north and south, there is a strange symbol on the western wall.")
 item01 = Item("a stainless steel spoon", "A dull metal spoon lies on the floor here.", True)
 item02 = Item("a long, frayed rope", "A long length of frayed rope lies on the floor here.", True)
 item03 = Item("a metal cot", "A metal framed cot with a stained mattress is here.", False)
@@ -38,8 +40,6 @@ def game_begin():
         action(player1)
 
 def look(player, target):
-    target = target
-    player = player
     if target == 'room':
         print "Room: " + player.inroom.title
         print player.inroom.rdesc
@@ -66,26 +66,26 @@ class Player:
         self.name = name
         self.inroom = inroom
         
-    def get_item(self, player, item):
+    def get_item(self, item):
         if item.cantake == True:
-            for n in player.inroom.rinv:
+            for n in self.inroom.rinv:
                 if n == item:
-                    player.inroom.rinv.remove(item)
-                    player.inv.append(item)
+                    self.inroom.rinv.remove(item)
+                    self.inv.append(item)
         print "You take " + item.sdesc + "."
         if item.cantake == False:
             print item.sdesc.capitalize() + " is much too big for you to take it!"
 
-    def drop_item(self, player, item):
-        for n in player.inv:
+    def drop_item(self, item):
+        for n in self.inv:
             if n == item:
-                player.inv.remove(item)
-                player.inroom.rinv.append(item)
+                self.inv.remove(item)
+                self.inroom.rinv.append(item)
         print "You drop " + item.sdesc + "."
 
-    def print_inv(self, player):
+    def print_inv(self):
         print "Inventory:"
-        for i in player.inv:
+        for i in self.inv:
             print "   " + i.sdesc
     def go_n(self):
         if self.inroom.n != "":
@@ -177,16 +177,16 @@ def action(player):
             look(player, 'room')
         if pact[0] == 'get':
             try:
-                player.get_item(player, vals[pact[1]])
+                player.get_item(vals[pact[1]])
             except KeyError:
                 print "You do not see that item here."
         if pact[0] == 'drop':
             try:
-                player.drop_item(player, vals[pact[1]])
+                player.drop_item(vals[pact[1]])
             except KeyError:
                 print "You do not have that item."
         if pact[0] == 'inventory' or pact[0] == 'i' or pact[0] == 'inv':
-            player.print_inv(player)
+            player.print_inv()
         if pact[0] == 'go':
             if pact[1] == "north" or pact[1] == "n":
                 player.go_n()
@@ -201,5 +201,9 @@ def action(player):
 
 add_exit_n(room01, room02)
 add_exit_s(room02, room01)
+add_exit_e(room02, room03)
+add_exit_w(room03, room02)
+add_exit_w(room02, room04)
+add_exit_e(room04, room02)
 
 start()
