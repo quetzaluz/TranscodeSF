@@ -1,3 +1,7 @@
+Congradulations on completing the first howework assignment!
+
+Here's some feedback on what you turned in:
+
 * When you're getting a box from input, it might feel generally
   cleaner to avoid putting the values into their corresponding fields
   in the class until they're fully parsed into the numbers that you
@@ -30,3 +34,11 @@
   print messages and demand input A better method of error handling
   would be raising an exception.
 
+* How did you test your code?  Did you write another script that used
+  the Box? If so, can you include it and email so I can test it out?
+  Maybe you used the python repl, which is also fine.
+
+* I didn't fully test your code, but here's one thing I noticed about
+  how it works: It turns out that when I intersect a box with another
+  box that is completely inside it, I don't get the outer box to be
+  the same as the inner one.
