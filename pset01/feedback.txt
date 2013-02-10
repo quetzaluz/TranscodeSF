@@ -1,0 +1,32 @@
+* When you're getting a box from input, it might feel generally
+  cleaner to avoid putting the values into their corresponding fields
+  in the class until they're fully parsed into the numbers that you
+  want.  Your check_box function is a little weird in that manner.
+
+  Here's an example of an api that would be a little more pleasant to
+  use for creating boxes:
+
+  class Box:
+    def __init__(self, x, y, width, height):
+    	"""Initialize a Box from the top left point indicated by 
+	(x, y) and the given width and height.  x, y, width, and height
+    	must all be numbers."""
+  
+  # this function exists outside any class.
+  def parseBox():
+      """Ask the user to enter values for a box, and return it"""
+
+* Your parsing code has a lot of repitition to it.  It would be better
+  if you had one function for parsing an int and looping until you had
+  a good value, and then called that function for every int you wanted
+  to parse.
+
+* Are all widths and heights whole integers?  What happens if they're
+  negative?
+
+* The general idea of this assignment is that you're designing a box
+  library.  It is generally considered frustrating to people using
+  your library if calling various methods in it (such as 'intersect')
+  print messages and demand input A better method of error handling
+  would be raising an exception.
+
