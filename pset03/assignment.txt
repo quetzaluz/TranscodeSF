@@ -66,3 +66,22 @@ some of the optional sections from pset01 and pset02.  :)
     you could call to determine if a given Enemy was flying or not?  (You
     could, of course, use the issubclass function here, but I'm asking you to
     think about an alternative to that.)
+
+
+* Calling overridden functions
+
+    Take a look at the code in inheritance_jumble.py.  Try running it.
+
+    (1) For each of the five "question" classes that print out a number,
+    write an explanation here that explains why they print out that number.
+
+
+
+    (2) Additionally, why does QuestionFive define print_num?  Couldn't it use
+    JustZero.print_num, like all of the other classes?  What happens if you
+    change the implementation of QuestionFive to just be:
+
+        class QuestionFive(TwoTwoTwoModified, OneOneOne):
+            pass
+
+    Why does the code QuestionFive().print_num() throw an error?
