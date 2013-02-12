@@ -85,3 +85,9 @@ some of the optional sections from pset01 and pset02.  :)
             pass
 
     Why does the code QuestionFive().print_num() throw an error?
+
+
+    (3) In your own words, if you call a function on an object, how does
+    Python determine which function in your code gets called?
+
+

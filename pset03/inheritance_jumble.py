@@ -21,6 +21,10 @@ class TwoTwoTwoModified(TwoTwoTwo):
         return x
 
 
+class JustZeroExtended(JustZero):
+    pass
+
+
 class QuestionOne(OneOneOne, TwoTwoTwo):
     pass
 
@@ -34,7 +38,7 @@ class QuestionThree(TwoTwoTwo, OneOneOne):
         return 3
 
 
-class QuestionFour(JustZero, TwoTwoTwo, OneOneOne):
+class QuestionFour(JustZeroExtended, TwoTwoTwo):
     pass
 
 
