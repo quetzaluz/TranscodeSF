@@ -1,7 +1,5 @@
-import sys
 import types
-
-
+import pickle
 
 def start():
     print ""                                  
@@ -11,37 +9,65 @@ def start():
     while True:
         sc = raw_input("Type 'NEW' to begin a new game, enter 'LOAD' to load an existing game: ")
         if sc.lower() == 'load':
-            print "I'm sorry, the load game option is not implemented yet."
+            game_load()
         elif sc.lower() == 'new':
             game_begin()
             break
-        else:
-            print "Unknown input, please try again."
-
+        elif sc.lower() == 'quit':
+            break
+        
 def game_begin():
-        name = ""
-        while name == "":
-                name = str(raw_input("Please enter your character's name: "))
+    room01.n = ""
+    room02.s = ""
+    item03.used = 0
+    room01.add_item(item04)
+    room01.add_item(item03)
+    room01.add_item(item01)
+    room01.add_item(item02)
+    room09.add_item(item08)
+    room09.add_item(item09)
+    room09.add_item(item10)
+    room09.add_item(item11)
+    name = ""
+    while name == "":
+        name = str(raw_input("Please enter your character's name: "))
         print
         print "Welcome to your doom, " + name + "!"
         print
         print "Type 'HELP' at any time for a list of commands!"
         print
-        player1 = Player(name, room01, True)
+        player1 = Player(name, "yourself", room01, "pc", [], 10)
+        demon = Player("Ballpit Demon", "a ballpit demon", room09, "npc", [], 10)
         look(player1, 'room')
         action(player1, "")
 
 def look(player, target):
     if target == 'room':
-        print "Room: " + player.inroom.title
+        print "You look at the room and see..."
+        print "   [" + player.inroom.title + "]"
         print player.inroom.rdesc
         player.inroom.invprint()
         print 
         print player.inroom.exits()
-#    if target != "":
-#        print target.idesc
-    else:
-        pass
+    if target == "exit" or target == "exits":
+        nesw = {'north': player.inroom.n, 'east':player.inroom.e, 'south':player.inroom.s, 'west':player.inroom.w}
+        ret = 0
+        for direc in nesw:
+            if nesw[direc] == "":
+                ret += 1
+            if nesw[direc] != "":
+                print "To the " + direc + " you see..."
+                print "   " + nesw[direc].title + "."    
+        if ret == 4:
+            print "There are no obvious exits."
+        if ret < 3:
+            pass
+    if target != "exit" or target != "room" or target != "exits":
+        try:
+            if player.find_rinv(kwords[target]) or player.find_inv(kwords[target]):
+                look(player, kwords[target])
+        except KeyError:
+            "You do not see a " + target + " here."
     
 def add_exit_n(room, exitroom):
         room.n = exitroom
@@ -53,22 +79,27 @@ def add_exit_w(room, exitroom):
         room.w = exitroom
         
 class Player:
-    def __init__(self, name, inroom, pc):
-        self.inv = []
-        self.name = name
-        self.inroom = inroom
-        self.turn = 0
-        self.pc = pc
-        self.hp = 10
-        
+    def __init__(self, name, ldesc, inroom, pc, inventory, hp):
+        self.name = name #String
+        self.ldesc = ldesc #String
+        self.inroom = inroom #Id of object created with Room (ex room01)
+        self.turn = 0 #Counts turns taken, useful for syncing NPC movement (int).
+        self.inv = inventory #list containing item IDs (ex item02)
+        self.pc = pc # "active", "stored", or "npc" (string) 
+        self.hp = hp #Health points of the character (int)
+
     def get_item(self, item):
         if item.cantake == True:
             for n in self.inroom.rinv:
                 if n == item:
-                    self.inroom.rinv.remove(item)
-                    self.inv.append(item)
-        print "You take " + item.sdesc + "."
-        if item.cantake == False:
+                    if len(self.inv) <= 10:
+                        self.inroom.rinv.remove(item)
+                        self.inv.append(item)
+                    if self.inv == 10 and self.pc == "pc":
+                         "You have too many items in your inventory."
+            if self.pc == "pc":
+                print "You take " + item.sdesc + "."
+        if item.cantake == False and self.pc == "pc":
             print item.sdesc.capitalize() + " is much too big for you to take it!"
 
     def drop_item(self, item):
@@ -87,48 +118,105 @@ class Player:
         for i in self.inroom.rinv:
             if i == item:
                 return True
-
+            
     def print_inv(self):
         print "Inventory:"
         for i in self.inv:
             print "   " + i.sdesc
+
+#these commands move the player between rooms. Originally I tried to have
+#a single go(self, direction) command, but kept encountering various errors.
     def go_n(self):
         if self.inroom.n != "":
             self.inroom = self.inroom.n
             look(self, 'room')
         else:
             print "There is no exit to the north."
+            
     def go_e(self):
         if self.inroom.e != "":
             self.inroom = self.inroom.e
             look(self, 'room')
         else:
             print "There is no exit to the east."
+            
     def go_s(self):
         if self.inroom.s != "":
             self.inroom = self.inroom.s
             look(self, 'room')
         else:
             print "There is no exit to the south."
+            
     def go_w(self):
         if self.inroom.w != "":
             self.inroom = self.inroom.w
             look(self, 'room')
         else:
             print "There is no exit to the west."
-        
-            
-        
-class Room:
-    def __init__(self, title, rdesc):
-        self.title = title
-        self.rdesc = rdesc
-        self.rinv = []
-        self.n = ""
+
+#This will throw items in inventory and deal damage to players.
+    def throw(self, weapon, target, direction):
+        if self.inroom.direction != "":
+            pass
+    
+#saves data in dictionaries that are used to construct rooms and the player.
+# THESE FUNCTIONS ARE CURRENTLY VERY BUGGY
+
+def game_save(player):
+    pdata = {'name': player.name, 'ldesc': player.ldesc, 'inroom': player.inroom, 'pc': player.pc, 'inventory': [], 'hp': player.hp }
+    for item in player.inv:
+        player.get_item(item)
+    player_data = pdata
+    items_data = {'item01': {}, 'item02': {}, 'item03': {}, 'item04': {}, 'item05': {}, 'item06': {}, 'item07': {}, 'item08': {}, 'item09': {}, 'item10': {}, 'item11': {}, 'item12': {}, 'item13': {}}
+    rooms_data = {'room01': {}, 'room02': {}, 'room03': {}, 'room04': {}, 'room05': {}, 'room06': {}, 'room07': {}, 'room08': {}, 'room09': {}, 'room10': {}, 'room11': {}, 'room12': {}, 'room13': {}}
+    for i in items:
+        data = items[i].data()
+        items_data[i] = data
+    for r in rooms:
+        data = rooms[r].data()
+        rooms_data[r] = data
+    f = open('save_data.pkl', 'wb')
+    pickle.dump([player_data, items_data, rooms_data], f)
+    f.close()
+    
+    print "Character '" + player.name + "' saved."
+    
+def game_load():
+    try:
+        f = open('save_data.pkl', 'rb')
+        player_data, items_data, rooms_data = pickle.load(f)
+        f.close()
+        player1 = Player(player_data['name'], player_data['ldesc'], player_data['inroom'], player_data['pc'], player_data['inventory'], player_data['hp'])
+        for i in items:
+            data = items_data[i]
+            items[i] = Item(data['sdesc'], data['ldesc'], data['cantake'], data['used'])
+        for r in rooms:
+            data = rooms_data[r]
+            rooms[r] = Room(data['title'], data['rdesc'], data['rinv'], data['n'], data['e'], data['s'], data['w'])
+        print
+        print "Welcome back, " + player1.name + "!"
+        print
+        look(player1, 'room')
+        action(player1, "")
+    except IOError:
+        print "No valid data present."
+
+class Room(object):
+    def __init__(self, title, rdesc, rinv, n, e, s, w):
+        self.title = title #String
+        self.rdesc = rdesc #String
+        self.rinv = rinv # Default is [], List
+        self.n = "" # Default is "" \/
         self.e = ""
         self.s = ""
         self.w = ""
-        
+
+    def data(self):
+        self.data = {'title': self.title, 'rdesc': self.rdesc, 'rinv': [], 'n': self.n, 'e': self.e, 's': self.s, 'w': self.w}
+        for item in self.rinv:
+            self.data['rinv'].append(item)
+        return self.data
+            
     def add_item(self, item):
         self.rinv.append(item)
 
@@ -149,15 +237,18 @@ class Room:
         return "Exits: " + str(exits)
     
 
-class Item:
-    def __init__(self, sdesc, ldesc, cantake):
-        self.sdesc = sdesc
-        self.ldesc = ldesc
-        self.cantake = cantake
-        self.used = 0
+class Item(object):
+    def __init__(self, sdesc, ldesc, cantake, used):
+        self.sdesc = sdesc #string
+        self.ldesc = ldesc #string
+        self.cantake = cantake #True or False
+        self.used = used #Starts at 0, int
+
+    def data(self):
+        return {'sdesc': self.sdesc, 'ldesc': self.ldesc, 'cantake': self.cantake, 'used': self.used}
  
 
-#Below are individual item methods. 
+####Below are individual item methods. 
 
 def use_cot(self):
     if item03.used == 0:
@@ -221,10 +312,6 @@ def use_spoon(self):
     
 Player.use_spoon = types.MethodType(use_spoon, None, Player)
 
-class NPC(Player):
-    def __init__(self, name, inroom, pc):
-        Player.__init__(self, name, inroom, False)
-
 def action(player, act):
     if act == "" or act is None:
         act = str((raw_input(str(player.hp) + "hp>"))).lower()
@@ -232,23 +319,38 @@ def action(player, act):
     if pact == []:
         pass
     if len(pact) > 3:
-        print "Bad Syntax. Type 'help' for commands."
+        print "Too many command words. Type 'help' for commands."
     if len(pact) == 1:
         if pact[0] == 'help':
             print "Commands are NOT case sensitive."
             print "   Drop <target>           Drops an item in your inventory."
             print "   Get <target>            Picks up an item."
             print "   Inventory <or> I        Shows your inventory." 
-            print "   Leave                   Exits the game."
+            print "   Leave <or> Quit         Exits the game."
+            print "   Save                    Saves game data."
             print "   Look <or> L             Looks at the room you are in."
-            print "   Look <target>           Look at an item or non-player character(NPC)."
-            print "   Go [n|e|s|w]   Go either north, east, south or west."
+            print "   Look <target>           Look at exits, an item or non-player character(NPC)."
+            print "   Go [n|e|s|w]            Go either north, east, south or west."
             print "   Talk <target>           Start a conversation with an NPC."
             print "   Say [1|2|3]             Pick a dialog option when talking to an NPC."
-            print "   Use <target>          Use an item. May or may not destroy the item."
-        if pact[0] == 'leave':
-            print "Goodbye, " + player.name + "!"
-            sys.end()
+            print "   Use <target>            Use an item. May or may not destroy the item."
+        if pact[0] == 'leave' or pact[0] == 'quit':
+            while True:
+                quitprompt = raw_input("Would you like to 'SAVE' your game or just 'QUIT?'")
+                if quitprompt.lower() == 'save':
+                    game_save(player)
+                    print "See you later, " + player.name + "! Type 'start()' to play again."
+                    player.pc = "stored"
+                    break
+                elif quitprompt.lower() == 'quit' or quitprompt.lower() == 'leave':
+                    print "See you later, " + player.name + "!"
+                    print "Type 'start()' to play again."
+                    player.pc = "stored"
+                    break
+            else:
+                pass
+        if pact[0] == 'save':
+            game_save(player)
         if pact[0] == 'inventory' or pact[0] == 'i' or pact[0] == 'inv':
             player.print_inv()
         if pact[0] == 'look' or pact[0] == "l":
@@ -269,10 +371,21 @@ def action(player, act):
             print "Drop what?"
         if pact[0] == 'use':
             print "Use what?"
-            
-        
+        if pact[0] == "north" or pact[0] == "n":
+            player.go_n
+            player.turn += 1
+        if pact[0] == "east" or pact[0] == "e":
+            player.go_e
+            player.turn += 1
+        if pact[0] == "south" or pact[0] == "s":
+            player.go_w
+            player.turn += 1
+        if pact[0] == "west" or pact[0] == "w":
+            player.go_s
+            player.turn += 1
         else:
             pass
+        
     if len(pact) == 2:
         if pact[0] == 'get' and pact[1] == "ball":
             ret = 0
@@ -291,7 +404,6 @@ def action(player, act):
                     player.turn += 1
             except KeyError:
                 print "Get which item?"
-                             
         if pact[0] == 'drop':
             try:
                 player.drop_item(kwords[pact[1]])
@@ -336,58 +448,53 @@ def action(player, act):
                     player.turn += 1
                 else:
                     print "You don't have a key."
+        if pact[0] == 'look':
+            look(player, pact[1])
         if pact[0] == 'throw':
-            print "Throw what in which direction?"
+            print "Try <throw> <object> <direction>"
+        else:
+            pass
+        
     if len(pact) == 3:
-        if pact[0] == 'use' and pact[1] == 'key' and pact[2] == 'door':
-                print "Try just <use key>."
-                
-                # I'll have an if statement the throw command here.
-                    
-    if player.pc == True:
-        action(player, "")
+        if pact[0] == 'use':
+            print "Try just <use> <object>"
+        if pact[0] == 'look':
+            print "Try <look> <object>"
+        if pact[0] == 'throw':
+            pass
 
+                # I'll have an if statement for the throw command here. #
+    if player.pc == "stored":
+        pass
+    if player.pc == "pc":
+        action(player, "")   
 
-#I tried to put the following room and object creations within a method,
-#but I found that the other methods would have trouble referencing rooms
-#when they were created with a method.
-
-room01 = Room("A Prison Cell", "You are in a damp cell that is filled with the stench of unwashed human bodies. There are strange stains over the concrete floor. Your only light source is a flickering incandescent bulb screwed within a grate covered aluminum fixture.")
-room02 = Room("A Hallway Lined with Cells", "You are in a long hallway lined with solid, windowless doors, each apparently leading to a cell. The hallway stretches to the east and west and the cell you emerged from is to the south.")
-room03 = Room("East End of the Hallway", "You are at the eastern end of the cell lined hallway. The hallway leads to a dead end--however, it appears a large hole has been blasted in the middle of the floor here. The pit is shadowy and you cannot tell what lies beyond.")
-room04 = Room("West End of the Hallway", "You are at the western end of the hallway. Besides the numerous cell doors to the north and south, there is a strange symbol on the western wall.")
-room05 = Room("Northwestern corner of a Ballpit", "You are at the northwest corner of the ballpit.")              
-room06 = Room("Northern side of a Ballpit", "You are at the northern side of the ballpit.")              
-room07 = Room("Northeastern corner of a Ballpit", "You are at the northeast corner of the ballpit.")
-room08 = Room("Western side of a Ballpit", "You are at the Western side of the ballpit.")
-room09 = Room("Center of a Ballpit", "You are in the center of the Google HQ's ballpit.")
-room10 = Room("Eastern side of a Ballpit", "You are at the Eastern side of the ballpit.")
-room11 = Room("Southwestern corner of a Ballpit", "You are at the southwestern corner of the ballpit.")
-room12 = Room("Southern side of a Ballpit", "You are at the southern side of the ballpit.")
-room13 = Room("Southeastern corner of a Ballpit", "You are in the southeastern corner of a ballpit.")
-item01 = Item("a stainless steel spoon", "A dull metal spoon lies on the floor here.", True)
-item02 = Item("a long, frayed rope", "A long length of frayed rope lies on the floor here.", True)
-item03 = Item("a metal cot", "A metal framed cot with a stained mattress is here.", False)
-item04 = Item("a concrete door", "A windowless concrete door is locked and bars the way to the north.", False)
-item05 = Item("a worn metal key", "A worn metal key glimmers faintly on the floor.", True)
-item06 = Item("a concrete door", "A windowless concrete door opens to a hallway to the north.", False)
-item07 = Item("a crude metal shank", "A spoon that has been sharpened into a crude knife is here.", True)
-item08 = Item("a red plastic ball", "A red plastic ball is in the ballpit.", True)
-item09 = Item("a yellow plastic ball", "A yellow plastic ball is in the ballpit.", True)
-item10 = Item("a blue plastic ball", "A blue plastic ball is in the ballpit.", True)
-item11 = Item("a green plastic ball", "A green plastic ball is in the ballpit.", True)
-item12 = Item("a piece of pizza", "A piece of pizza has been abandoned in the ballpit.", True)
-item13 = Item("a smelly sock", "A smelly sock has been left in the ballpit.", True)
-ballz = [item08, item09, item10, item11]
-room01.add_item(item04)
-room01.add_item(item03)
-room01.add_item(item01)
-room01.add_item(item02)
-room09.add_item(item08)
-room09.add_item(item09)
-room09.add_item(item10)
-room09.add_item(item11)
-kwords = {"spoon": item01, "rope": item02, "cot": item03, "door": item04, "key": item05, "shank": item07, "red": item08, "yellow": item09, "blue": item10, "green": item11}
+item01 = Item("a stainless steel spoon", "A dull metal spoon lies on the floor here.", True, 0)
+item02 = Item("a long, frayed rope", "A long length of frayed rope lies on the floor here.", True, 0)
+item03 = Item("a metal cot", "A metal framed cot with a stained mattress is here.", False, 0)
+item04 = Item("a concrete door", "A windowless concrete door is locked and bars the way to the north.", False, 0)
+item05 = Item("a worn metal key", "A worn metal key glimmers faintly on the floor.", True, 0)
+item06 = Item("a concrete door", "A windowless concrete door opens to a hallway to the north.", False, 0)
+item07 = Item("a crude metal shank", "A spoon that has been sharpened into a crude knife is here.", True, 0)
+item08 = Item("a red plastic ball", "A red plastic ball is in the ballpit.", True, 0)
+item09 = Item("a yellow plastic ball", "A yellow plastic ball is in the ballpit.", True, 0)
+item10 = Item("a blue plastic ball", "A blue plastic ball is in the ballpit.", True, 0)
+item11 = Item("a green plastic ball", "A green plastic ball is in the ballpit.", True, 0)
+item12 = Item("a piece of pizza", "A piece of pizza has been abandoned in the ballpit.", True, 0)
+item13 = Item("a smelly sock", "A smelly sock has been left in the ballpit.", True, 0) 
+room01 = Room("A Prison Cell", "You are in a damp cell that is filled with the stench of unwashed human bodies. There are strange stains over the concrete floor. Your only light source is a flickering incandescent bulb screwed within a grate covered aluminum fixture.", [], "", "", "", "")
+room02 = Room("A Hallway Lined with Cells", "You are in a long hallway lined with solid, windowless doors, each apparently leading to a cell. The hallway stretches to the east and west and the cell you emerged from is to the south.", [], "", "", "", "")
+room03 = Room("East End of the Hallway", "You are at the eastern end of the cell lined hallway. The hallway leads to a dead end--however, it appears a large hole has been blasted in the middle of the floor here. The pit is shadowy and you cannot tell what lies beyond.", [], "", "", "", "")
+room04 = Room("West End of the Hallway", "You are at the western end of the hallway. Besides the numerous cell doors to the north and south, there is a strange symbol on the western wall.", [], "", "", "", "")
+room05 = Room("Northwestern corner of a Ballpit", "You are at the northwest corner of the ballpit.", [], "", "", "", "")              
+room06 = Room("Northern side of a Ballpit", "You are at the northern side of the ballpit.", [], "", "", "", "")              
+room07 = Room("Northeastern corner of a Ballpit", "You are at the northeast corner of the ballpit.", [], "", "", "", "")
+room08 = Room("Western side of a Ballpit", "You are at the Western side of the ballpit.", [], "", "", "", "")
+room09 = Room("Center of a Ballpit", "You are in the center of the Google HQ's ballpit.", [], "", "", "", "")
+room10 = Room("Eastern side of a Ballpit", "You are at the Eastern side of the ballpit.", [], "", "", "", "")
+room11 = Room("Southwestern corner of a Ballpit", "You are at the southwestern corner of the ballpit.", [], "", "", "", "")
+room12 = Room("Southern side of a Ballpit", "You are at the southern side of the ballpit.", [], "", "", "", "")
+room13 = Room("Southeastern corner of a Ballpit", "You are in the southeastern corner of a ballpit.", [], "", "", "", "") 
 add_exit_e(room02, room03)
 add_exit_w(room03, room02)
 add_exit_w(room02, room04)
@@ -416,6 +523,11 @@ add_exit_n(room11, room08)
 add_exit_s(room08, room11)
 add_exit_n(room13, room10)
 add_exit_s(room10, room13)
+ballz = [item08, item09, item10, item11]
+kwords = {"spoon": item01, "rope": item02, "cot": item03, "door": item04, "key": item05, "shank": item07, "red": item08, "yellow": item09, "blue": item10, "green": item11}
+rooms = {'room01': room01, 'room02': room02, 'room03': room03, 'room04': room04, 'room05': room05, 'room06': room06, 'room07': room07, 'room08': room08, 'room09': room09, 'room10': room10, 'room11': room11, 'room12': room12, 'room13': room13}
+items = {'item01': item01, 'item02': item02, 'item03': item03, 'item04': item04, 'item05': item05, 'item06': item06, 'item07': item07, 'item08': item08, 'item09': item09, 'item10': item10, 'item11': item11, 'item12': item12, 'item13': item13}
 
 start()
+
 
