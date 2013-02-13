@@ -1,0 +1,93 @@
+The assignment this week is intended to be heavier on thinking and lighter on
+programming.  If you are somehow itching to write more code, go back and finish
+some of the optional sections from pset01 and pset02.  :)
+
+
+* Read Chapter 18 (Inheritance) of How To Think Like A Computer Scientist
+
+    http://www.greenteapress.com/thinkpython/html/thinkpython019.html
+
+
+* is-a and has-a relationships
+
+    Here are a number of scenarios where a bunch of different classes are
+    presented.  If you were going to make Python classes, how would you
+    represent the relationship of these classes to each other?  This set
+    of questions is more to get you thinking about the high level of how
+    to organize your programs.  Just answer directly here in assignment.txt.
+
+
+    (Example) You've got the following object types: Car, Vehicle, Wheel,
+    Truck, Bicycle.  What are the is-a and has-a relationships among these
+    types?
+
+        Bicycle is-a Vehicle (since all bikes are vehicles)
+
+        Car is-a Vehicle (since all cars are vehicles)
+
+        Truck is-a Car (since all trucks are a type of car)
+
+        Vehicle has-a Wheel
+
+
+    (1) In the above example, if you wanted to define a num_wheels()
+    function on the Vehicle class to return the number of wheels that a given
+    object type had, how might you implement this function so that different
+    types of Vehicles return different values?  What members and functions
+    might you add to which classes?
+
+
+    (2) You're making the hottest new FarmSimulator2000 game for MySpaceBook.
+    You have the following object types: Cat, Animal, Claws, Cow, Mammal,
+    Collar, Location.  How do they relate to each other?  Which types have an
+    is-a relationship?  Which types have a has-a relationship to each other?
+
+
+    (3) Library scenario, extended remix.  You're helping out your local
+    library and want to model everything they're doing.  They're thinking about
+    the following object types: Book, Person, Author, Genre, Shelf, Room.  What
+    are the is-a and has-a relationships among these types?
+
+
+    (4) You're writing your Finalerest Fantasy 20 role playing game and you're
+    trying to model the fantasy enemies you can fight.  You're thinking about
+    the following object types: Orc, Health, Enemy, Weapon, Troll, Pixie,
+    Eagle, FlyingEnemy.  What are the is-a and has-a relationships here?
+
+
+    (5) In the above example, if the game designer then came to you and told
+    you that what this game needed was Flying Trolls, how would you add them to
+    this object hierarchy using is-a relationships?
+
+
+    (6) A class isn't usually isn't good for much unless it adds some new
+    functionality.  If you had a list of enemies and wanted to check which
+    ones were flying or not, what functions would you add to which classes that
+    you could call to determine if a given Enemy was flying or not?  (You
+    could, of course, use the issubclass function here, but I'm asking you to
+    think about an alternative to that.)
+
+
+* Calling overridden functions
+
+    Take a look at the code in inheritance_jumble.py.  Try running it.
+
+    (1) For each of the five "question" classes that print out a number,
+    write an explanation here that explains why they print out that number.
+
+
+
+    (2) Additionally, why does QuestionFive define print_num?  Couldn't it use
+    JustZero.print_num, like all of the other classes?  What happens if you
+    change the implementation of QuestionFive to just be:
+
+        class QuestionFive(TwoTwoTwoModified, OneOneOne):
+            pass
+
+    Why does the code QuestionFive().print_num() throw an error?
+
+
+    (3) In your own words, if you call a function on an object, how does
+    Python determine which function in your code gets called?
+
+
