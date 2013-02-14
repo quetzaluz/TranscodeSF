@@ -1,3 +1,5 @@
+LAME NOTE!!!! I had to complete this assignment twice because I accidentally lost all of my changes with a misdirected git checkout. Lucky for you I was more verbose and enthusiastic the first time I did this assignment, so now you have less text to read!
+
 The assignment this week is intended to be heavier on thinking and lighter on
 programming.  If you are somehow itching to write more code, go back and finish
 some of the optional sections from pset01 and pset02.  :)
@@ -35,29 +37,60 @@ some of the optional sections from pset01 and pset02.  :)
     object type had, how might you implement this function so that different
     types of Vehicles return different values?  What members and functions
     might you add to which classes?
-
+ANSWER PART I-1:
+I would define the number of wheels a vehicle has in their unique initialization methods. However, since it is relevant to know how many wheels all vehicles have (for instance, it's worth knowing that even a boat might have 0 wheels), I would create a method that returns the number of wheels in the parent class so that all child classes would inherit this method. Please see the example code below:
+class Vehicle(object):
+	def __init__(self, wheels):
+		self.wheels = wheels
+	def num_wheels():
+		return self.wheels
+class Bicycle(Vehicle):
+	def __init__(self):
+		self.wheels = 2
+bike = Bicycle()
+bike.num_wheels #Would equal 2.
 
     (2) You're making the hottest new FarmSimulator2000 game for MySpaceBook.
     You have the following object types: Cat, Animal, Claws, Cow, Mammal,
     Collar, Location.  How do they relate to each other?  Which types have an
     is-a relationship?  Which types have a has-a relationship to each other?
-
+ANSWER PART I-2:
+Mammal IS-A Animal
+Cat IS-A Mammal
+Cow IS-A Mammal
+Cat HAS-A Claws (Cats, but not all mammals, have claws. For instance, cows do not have claws)
+Cat HAS-A Collar (possible that Cow HAS-A Collar as well. Maybe we can have a "Domesticated" subclass that inherits from Mammal so that these animals can initialize with collars)
+Animal HAS-A Location (since it's relevant to know the location of all animals)
 
     (3) Library scenario, extended remix.  You're helping out your local
     library and want to model everything they're doing.  They're thinking about
     the following object types: Book, Person, Author, Genre, Shelf, Room.  What
     are the is-a and has-a relationships among these types?
-
+ANSWER PART I-3:
+Person HAS-A Book (Person meaning borrowers/members, does not relate to Author)
+Book HAS-A Author
+Book HAS-A Genre
+Room HAS-A Shelf (this can also be designed so that rooms are assigned to shelves, since from a database management perspective shelves are a more wieldy unit for measuring and classifying a collection of books. Real life scenarios do not have to correspond to abstract structures in an excessively literal way. However, it would probably be best for both rooms and shelves to be values derived from a call number attribute owned by Book, since collections often move between libraries, rooms, and shelves).
+It is worth noting that I have identified no IS-A relationships here. I do not see cause to have inherited classes in this problem. In some cases, inherited classes only complicate program design.
 
     (4) You're writing your Finalerest Fantasy 20 role playing game and you're
     trying to model the fantasy enemies you can fight.  You're thinking about
     the following object types: Orc, Health, Enemy, Weapon, Troll, Pixie,
     Eagle, FlyingEnemy.  What are the is-a and has-a relationships here?
-
+ANSWER PART I-4:
+Enemy HAS-A Health
+Enemy HAS-A Weapon
+Enemy HAS-A FlyingEnemy(True/False binary attribute)
+Orc IS-A Enemy
+Troll IS-A Enemy
+Pixie IS-A Enemy
+Eagle IS-A Enemy
 
     (5) In the above example, if the game designer then came to you and told
     you that what this game needed was Flying Trolls, how would you add them to
     this object hierarchy using is-a relationships?
+ANSWER PART I-5:
+The design proposed above ensures that all enemies derived from the Enemy class have an attribute FlyingEnemy. This can be set in initialization, but there should be separate a isFlying method in the Enemy class that returns the FlyingEnemy value. This will be valuable for methods that behave differently depending on whether or not the enemy is flying, such as earthquake spells, which in the original Final Fantasy games deal no damage to flying enemies. There should also be a method for setting the value of FlyingEnemy in the event of flying enchantment spells or the Flying Troll scenario described above.
 
 
     (6) A class isn't usually isn't good for much unless it adds some new
@@ -66,7 +99,11 @@ some of the optional sections from pset01 and pset02.  :)
     you could call to determine if a given Enemy was flying or not?  (You
     could, of course, use the issubclass function here, but I'm asking you to
     think about an alternative to that.)
-
+ANSWER PART I-6:
+Because of the aforementioned case of earthquake spells or spells such as flying enchantments, the parent class Enemy contains everything that is needed to set and return the FlyingEnemy binary value. If you had a list of enemies and wanted to check which enemies were flying or not, you would simply need to build a list with all of the enemies you wish to check and run a loop calling isFlying method:
+#Example, assuming list of enemies is already made:
+for enemy in list:
+	enemy.isFlying()
 
 * Calling overridden functions
 
@@ -74,7 +111,13 @@ some of the optional sections from pset01 and pset02.  :)
 
     (1) For each of the five "question" classes that print out a number,
     write an explanation here that explains why they print out that number.
-
+ANSWER PART II-1:
+General note on inheritance. When a new class (NewClass) inherits from multiple other classes (BaseClass1 ... n), it first utilizes methods and attributes defined within it's it's own class definition. When trying to define methods and attributes not directly defined in the class, it inherits attributes from BaseClasses left-to-right in the order that they are named. Please see the answer to part II question 3 for more information about this.
+QuestionOne: This class returns "111" when called because the first base class named in the list of classes QuestionOne inherits from is OneOneOne. Once it picks up a num method from OneOneOne it does not go on to pick up the num method from TwoTwoTwo.
+QuestionTwo: This question returns "222" because it inherits the num method from "TwoTwoTwo," which is the first class listed to inherit from when the class QuestionTwo was defined.
+QuestionThree: This question returns "3" because the num method was redefined when the class QuestionThree was defined.
+QuestionFour: This one is interesting. QuestionFour has no definition for num, so it must inherit it. When looking at the first base class named in the definition, JustZeroExtended, it appears there is no num method, and that it should inherit a num method from the second base class listed, which is TwoTwoTwo. However, JustZeroExtended actually inherits the num method of JustZero, and this is inherited and given to QuestionFour for inheritance.
+QuestionFive: QuestionFive inherits the num method from TwoTwoTwoModified, which requires a parameter, x. The value of 9 is supplied for the parameter x, and so QuestionFive returns 9.
 
 
     (2) Additionally, why does QuestionFive define print_num?  Couldn't it use
@@ -85,9 +128,12 @@ some of the optional sections from pset01 and pset02.  :)
             pass
 
     Why does the code QuestionFive().print_num() throw an error?
-
+ANSWER PART II-2:
+If you modify the definition of QuestionFive to only be pass, you will get a TypeError, because the method that QuestionFive attempts to call--the num method from TwoTwoTwoModified--requires two arguments (self, x). Therefore the definition must explicitly call the inherited num method with a parameter value supplied.
 
     (3) In your own words, if you call a function on an object, how does
     Python determine which function in your code gets called?
 
+ANSWER PART II-3:
+First, a class will use any attributes or methods explicitly defined within it's own class definition. Second, a class will use all attributes and methods defined in the base classes it explicitly inherits from, in order from left to right. If a class is defined by three base classes and all the attributes and methods it could possibly call are provided by the first two base classes, the new class will inherit nothing from the third class. Finally, a class will inherit attributes and methods from any parent classes that are not explicitly named when creating the new method (this is illustrated by the QuestionFour method above). One last note: because dot notation (IE self.num(9)) makes IS-A relationships very explicit, it is impossible to call global functions or attributes with dot notation, and global functions or attributes are not involved in inheritance in that sense--any class or object, regardless of inheritance hierarchy, can call global functions or attributes.
 
