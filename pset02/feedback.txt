@@ -1,0 +1,33 @@
+An excellent start!
+
+I know you might still be working on your game, but while you do, some
+advice:
+
+* It might be good to make each separate command its own method,
+  either on the Player or as functions elsewhere.  You can even keep
+  the set of functions in a dictionary and look up which one to use
+  based on the first word in the command.  Gotta love functions being
+  first class.
+
+* It's a little weird to have all your rooms and items be globals.
+  You might want to have them as things you set up in some kind of
+  play_game() or initialize_game() function.
+
+* It might be good to have each item be its own class, with its own
+  use() method, so you don't have to dispatch yourself based on what
+  the string of the item is.
+
+* Variable names better than "item01" and "item02" and "room 06" might
+  be useful.
+
+* Here's an error I noticed when running your game:
+
+  File "adventure1.py", line 70, in look
+    "You do not see a " + target + " here."
+TypeError: cannot concatenate 'str' and 'Item' objects
+
+Let enne and I know if and when you consider yourself satisfied, and
+one of us would be glad to take a look at it again.  (if you're
+satisfied now, that's totally fine too)
+
+--Naomi
