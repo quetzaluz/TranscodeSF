@@ -1,4 +1,6 @@
 import types
+import random
+import weakref
 import pickle
 
 def start():
@@ -24,29 +26,26 @@ def game_begin():
     room01.add_item(item03)
     room01.add_item(item01)
     room01.add_item(item02)
-    room09.add_item(item08)
-    room09.add_item(item09)
-    room09.add_item(item10)
-    room09.add_item(item11)
+    for room in ballpit:
+        for ball in ballz:
+            room.add_item(ball)
     name = ""
     while name == "":
         name = str(raw_input("Please enter your character's name: "))
-        print
-        print "Welcome to your doom, " + name + "!"
-        print
-        print "Type 'HELP' at any time for a list of commands!"
-        print
+        print "\nWelcome to your doom, " + name + "!"
+        print "\nType 'HELP' at any time for a list of commands!\n"
         player1 = Player(name, "yourself", room01, "pc", [], 10)
-        demon = Player("Ballpit Demon", "a ballpit demon", room09, "npc", [], 10)
         look(player1, 'room')
         action(player1, "")
 
 def look(player, target):
+    if player.pc != "pc":
+        pass
     if target == 'room':
         print "You look at the room and see..."
         print "   [" + player.inroom.title + "]"
         print player.inroom.rdesc
-        player.inroom.invprint()
+        player.inroom.inv_print()
         print 
         print player.inroom.exits()
     if target == "exit" or target == "exits":
@@ -57,7 +56,10 @@ def look(player, target):
                 ret += 1
             if nesw[direc] != "":
                 print "To the " + direc + " you see..."
-                print "   " + nesw[direc].title + "."    
+                print "   " + nesw[direc].title + "."
+                for person in nesw[direc].pinv:
+                    print person
+                print
         if ret == 4:
             print "There are no obvious exits."
         if ret < 3:
@@ -68,22 +70,12 @@ def look(player, target):
                 look(player, kwords[target])
         except KeyError:
             "You do not see a " + target + " here."
-    
-def add_exit_n(room, exitroom):
-        room.n = exitroom
-def add_exit_s(room, exitroom):
-        room.s = exitroom
-def add_exit_e(room, exitroom):
-        room.e = exitroom
-def add_exit_w(room, exitroom):
-        room.w = exitroom
         
 class Player:
     def __init__(self, name, ldesc, inroom, pc, inventory, hp):
         self.name = name #String
         self.ldesc = ldesc #String
         self.inroom = inroom #Id of object created with Room (ex room01)
-        self.turn = 0 #Counts turns taken, useful for syncing NPC movement (int).
         self.inv = inventory #list containing item IDs (ex item02)
         self.pc = pc # "active", "stored", or "npc" (string) 
         self.hp = hp #Health points of the character (int)
@@ -129,36 +121,123 @@ class Player:
     def go_n(self):
         if self.inroom.n != "":
             self.inroom = self.inroom.n
-            look(self, 'room')
+            if self.pc == "pc":
+                look(self, 'room')
         else:
-            print "There is no exit to the north."
+            if self.pc == "pc":
+                print "There is no exit to the north."
             
     def go_e(self):
         if self.inroom.e != "":
             self.inroom = self.inroom.e
-            look(self, 'room')
+            if self.pc == "pc":
+                look(self, 'room')
         else:
-            print "There is no exit to the east."
+            if self.pc == "pc":
+                print "There is no exit to the east."
             
     def go_s(self):
         if self.inroom.s != "":
             self.inroom = self.inroom.s
-            look(self, 'room')
+            if self.pc == "pc":
+                look(self, 'room')
         else:
-            print "There is no exit to the south."
+            if self.pc == "pc":
+                print "There is no exit to the south."
             
     def go_w(self):
         if self.inroom.w != "":
             self.inroom = self.inroom.w
-            look(self, 'room')
+            if self.pc == "pc":
+                look(self, 'room')
         else:
-            print "There is no exit to the west."
+            if self.pc == "pc":
+                print "There is no exit to the west."
 
 #This will throw items in inventory and deal damage to players.
     def throw(self, weapon, target, direction):
         if self.inroom.direction != "":
             pass
+
+#This prompts NPCs to act, called after the player acts.
+    def turn(self, reference):
+        if reference is None:
+            pass
+        else:
+            reference.demon_ai(self)
+                
+
+class NPC(Player):
+    def __init__(self, name, ldesc, inroom, pc, inventory, hp):
+        self.name = name #String
+        self.ldesc = ldesc #String
+        self.inroom = inroom #Id of object created with Room (ex room01)
+        self.inv = inventory #list containing item IDs (ex item02)
+        self.pc = pc # "active", "stored", or "npc" (string) 
+        self.hp = hp #Health points of the character (int)
+        self.inroom.pinv.append(self.ldesc)
     
+    def random_move(self, player):
+        exit_list = self.inroom.exits()
+        ran_room = random.choice(exit_list)
+        if ran_room == "N":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the north."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_n()
+            self.inroom.pinv.append(self.ldesc)
+        if ran_room == "E":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the east."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_e()
+            self.inroom.pinv.append(self.ldesc)
+        if ran_room == "S":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the south."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_s()
+            self.inroom.pinv.append(self.ldesc)
+        if ran_room == "W":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the west."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_w()
+            self.inroom.pinv.append(self.ldesc)
+
+    def demon_ai(self, player):
+        start_ai = False
+        for room in ballpit:
+            if player.inroom == room:
+                start_ai = True
+        if start_ai is True:
+            if self.inroom == player.inroom:
+                self.random_move(player)
+#                if self.inroom.n == player.inroom:
+#                   self.throw(ball, player, n)
+#                if self.inroom.e == player.inroom:
+#                   self.throw(ball, player, e)
+#                if self.inroom.s == player.inroom:
+#                   self.throw(ball, player, s)
+#                if self.inroom.w == player.inroom:
+#                   self.throw(ball, player, w)
+            if self.inv <= 6:
+                for item in self.inroom.rinv:
+                    for ball in ballz:
+                        if item == ball:
+                             self.get_item(item)
+            else:
+                    self.random_move(player)
+                            
+
 #saves data in dictionaries that are used to construct rooms and the player.
 # THESE FUNCTIONS ARE CURRENTLY VERY BUGGY
 
@@ -193,19 +272,18 @@ def game_load():
         for r in rooms:
             data = rooms_data[r]
             rooms[r] = Room(data['title'], data['rdesc'], data['rinv'], data['n'], data['e'], data['s'], data['w'])
-        print
-        print "Welcome back, " + player1.name + "!"
-        print
+        print "\nWelcome back, " + player1.name + "!\n"
         look(player1, 'room')
         action(player1, "")
     except IOError:
         print "No valid data present."
 
 class Room(object):
-    def __init__(self, title, rdesc, rinv, n, e, s, w):
+    def __init__(self, title, rdesc, rinv, pinv, n, e, s, w):
         self.title = title #String
         self.rdesc = rdesc #String
-        self.rinv = rinv # Default is [], List
+        self.rinv = rinv # Default is [], list of items in room
+        self.pinv = pinv # Default is [], list of people in room
         self.n = "" # Default is "" \/
         self.e = ""
         self.s = ""
@@ -220,9 +298,20 @@ class Room(object):
     def add_item(self, item):
         self.rinv.append(item)
 
-    def invprint(self):
+    def add_exit_n(room, exitroom):
+        room.n = exitroom
+    def add_exit_s(room, exitroom):
+        room.s = exitroom
+    def add_exit_e(room, exitroom):
+        room.e = exitroom
+    def add_exit_w(room, exitroom):
+        room.w = exitroom
+
+    def inv_print(self):
         for i in self.rinv:
             print i.ldesc
+        for y in self.pinv:
+            print y
             
     def exits(self):
         exits = []
@@ -252,26 +341,20 @@ class Item(object):
 
 def use_cot(self):
     if item03.used == 0:
-        print
-        print "You notice something under your pillow. It's a key!"
-        print
+        print "\nYou notice something under your pillow. It's a key!\n"
         room01.add_item(item05)
         self.get_item(item05)
         item03.used += 1
     if item03.used >= 1:
-        print
-        print "You rest on the dingy cot."
-        print
+        print "\nYou rest on the dingy cot.\n"
 
 Player.use_cot = types.MethodType(use_cot, None, Player)
 
 def use_key(self):
     if self.inroom == room01:
-        print
-        print "You use the key to open the door."
-        print
-        add_exit_n(room01, room02)
-        add_exit_s(room02, room01)
+        print "\nYou use the key to open the door.\n"
+        room01.add_exit_n(room02)
+        room02.add_exit_s(room01)
         room01.rinv.remove(item04)
         room01.add_item(item06)
         self.inv.remove(item05)
@@ -282,15 +365,11 @@ Player.use_key = types.MethodType(use_key, None, Player)
 
 def use_rope(self):
     if self.inroom == room01:
-        print
-        print "You tie the rope to the light fixture and try to hang yourself. The rope snaps into two worthless pieces. What a waste!"
-        print
+        print "\nYou tie the rope to the light fixture and try to hang yourself. The rope snaps into two worthless pieces. What a waste!\n"
         self.inv.remove(item02)
         room03.add_item(item02)
     if self.inroom == room03:
-        print
-        print "You tie the rope to a jutting piece of rebar and try to repel down the hole to the floor below. The rope snaps and you plummet!"
-        print
+        print "\nYou tie the rope to a jutting piece of rebar and try to repel down the hole to the floor below. The rope snaps and you plummet!\n"
         self.inv.remove(item02)
         self.inroom = room09
         look(self, 'room')
@@ -300,13 +379,12 @@ def use_rope(self):
 Player.use_rope = types.MethodType(use_rope, None, Player)
     
 def use_spoon(self):
-    if self.inroom == room01 or self.inroom == room02:
-        print
-        print "You sharpen the spoon into a crude shank by running it over the concrete floor for a few hours."
-        print
+    if self.inroom == room01:
+        print '\nYou sharpen the spoon into a crude shank by running it over the concrete floor for a few hours.\n'
         self.inv.remove(item01)
         self.inroom.add_item(item07)
         self.get_item(item07)
+        print "\nThat was a lot of work! You're getting tired.\n"
     else:
         pass
     
@@ -372,80 +450,85 @@ def action(player, act):
         if pact[0] == 'use':
             print "Use what?"
         if pact[0] == "north" or pact[0] == "n":
-            player.go_n
-            player.turn += 1
+            player.go_n()
+            player.turn(demon)
         if pact[0] == "east" or pact[0] == "e":
-            player.go_e
-            player.turn += 1
+            player.go_e()
+            player.turn(demon)
         if pact[0] == "south" or pact[0] == "s":
-            player.go_w
-            player.turn += 1
+            player.go_s()
+            player.turn(demon)
         if pact[0] == "west" or pact[0] == "w":
-            player.go_s
-            player.turn += 1
+            player.go_w()
+            player.turn(demon)
         else:
             pass
         
     if len(pact) == 2:
+        if pact[0] == 'open' and pact[1] == 'door':
+            print "You'll need a key to open the door."
         if pact[0] == 'get' and pact[1] == "ball":
             ret = 0
             for ball in ballz:
                 if player.find_rinv(ball):
                     player.get_item(ball)
                     ret = 1
-                    player.turn += 1
+                    player.turn(demon)
                     break
             if ret == 0:
                 print "There are no balls suitable for throwing here."
         if pact[0] == 'get':
             try:
                 if player.find_rinv(kwords[pact[1]]):
-                    player.get_item(kwords[pact[1]])     
-                    player.turn += 1
+                    player.get_item(kwords[pact[1]])
+                    player.turn(demon)
             except KeyError:
-                print "Get which item?"
+                if pact[1] == 'ball':
+                    pass
+                else:
+                    print "Get which item?"
         if pact[0] == 'drop':
             try:
                 player.drop_item(kwords[pact[1]])
-                player.turn += 1
+                player.turn(demon)
             except KeyError:
                 print "Drop which item?"
         if pact[0] == 'go':
             if pact[1] == "north" or pact[1] == "n":
                 player.go_n()
-                player.turn += 1
+                player.turn(demon)
             if pact[1] == "east" or pact[1] == "e":
                 player.go_e()
-                player.turn += 1
+                player.turn(demon)
             if pact[1] == "south" or pact[1] == "s":
                 player.go_s()
-                player.turn += 1
+                player.turn(demon)
             if pact[1] == "west" or pact[1] == "w":
                 player.go_w()
-                player.turn += 1
+                player.turn(demon)
         if pact[0] == 'use':
             if pact[1] == "rope":
                 if player.find_inv(item02):
                     player.use_rope()
-                    player.turn += 1
+                    player.turn(demon)
                 else:
                     print "You don't have any rope."
             if pact[1] == "spoon":
                 if player.find_inv(item01):
                     player.use_spoon()
-                    player.turn += 1
+                    player.turn(demon)
                 else:
                     print "You don't have a spoon."
             if pact[1] == "cot":
                 if player.find_rinv(item03):
                     player.use_cot()
-                    player.turn += 1
+                    player.turn(demon)
                 else:
                     print "You do not see a cot here."
             if pact[1] == "key":
                 if player.find_inv(item05):
                     player.use_key()
-                    player.turn += 1
+                    player.turn(demon)
                 else:
                     print "You don't have a key."
         if pact[0] == 'look':
@@ -482,52 +565,53 @@ item10 = Item("a blue plastic ball", "A blue plastic ball is in the ballpit.", T
 item11 = Item("a green plastic ball", "A green plastic ball is in the ballpit.", True, 0)
 item12 = Item("a piece of pizza", "A piece of pizza has been abandoned in the ballpit.", True, 0)
 item13 = Item("a smelly sock", "A smelly sock has been left in the ballpit.", True, 0) 
-room01 = Room("A Prison Cell", "You are in a damp cell that is filled with the stench of unwashed human bodies. There are strange stains over the concrete floor. Your only light source is a flickering incandescent bulb screwed within a grate covered aluminum fixture.", [], "", "", "", "")
-room02 = Room("A Hallway Lined with Cells", "You are in a long hallway lined with solid, windowless doors, each apparently leading to a cell. The hallway stretches to the east and west and the cell you emerged from is to the south.", [], "", "", "", "")
-room03 = Room("East End of the Hallway", "You are at the eastern end of the cell lined hallway. The hallway leads to a dead end--however, it appears a large hole has been blasted in the middle of the floor here. The pit is shadowy and you cannot tell what lies beyond.", [], "", "", "", "")
-room04 = Room("West End of the Hallway", "You are at the western end of the hallway. Besides the numerous cell doors to the north and south, there is a strange symbol on the western wall.", [], "", "", "", "")
-room05 = Room("Northwestern corner of a Ballpit", "You are at the northwest corner of the ballpit.", [], "", "", "", "")              
-room06 = Room("Northern side of a Ballpit", "You are at the northern side of the ballpit.", [], "", "", "", "")              
-room07 = Room("Northeastern corner of a Ballpit", "You are at the northeast corner of the ballpit.", [], "", "", "", "")
-room08 = Room("Western side of a Ballpit", "You are at the Western side of the ballpit.", [], "", "", "", "")
-room09 = Room("Center of a Ballpit", "You are in the center of the Google HQ's ballpit.", [], "", "", "", "")
-room10 = Room("Eastern side of a Ballpit", "You are at the Eastern side of the ballpit.", [], "", "", "", "")
-room11 = Room("Southwestern corner of a Ballpit", "You are at the southwestern corner of the ballpit.", [], "", "", "", "")
-room12 = Room("Southern side of a Ballpit", "You are at the southern side of the ballpit.", [], "", "", "", "")
-room13 = Room("Southeastern corner of a Ballpit", "You are in the southeastern corner of a ballpit.", [], "", "", "", "") 
-add_exit_e(room02, room03)
-add_exit_w(room03, room02)
-add_exit_w(room02, room04)
-add_exit_e(room04, room02)
-add_exit_n(room09, room06)
-add_exit_s(room06, room09)
-add_exit_e(room09, room10)
-add_exit_w(room10, room09)
-add_exit_s(room09, room12)
-add_exit_n(room12, room09)
-add_exit_w(room09, room08)
-add_exit_e(room08, room09)
-add_exit_e(room05, room06)
-add_exit_w(room06, room05)
-add_exit_e(room06, room07)
-add_exit_w(room07, room06)
-add_exit_s(room05, room08)
-add_exit_n(room08, room05)
-add_exit_s(room07, room10)
-add_exit_n(room10, room07)
-add_exit_e(room11, room12)
-add_exit_w(room12, room11)
-add_exit_e(room12, room13)
-add_exit_w(room13, room12)
-add_exit_n(room11, room08)
-add_exit_s(room08, room11)
-add_exit_n(room13, room10)
-add_exit_s(room10, room13)
+room01 = Room("A Prison Cell", "You are in a damp cell that is filled with the stench of unwashed human \nbodies. There are strange stains over the concrete floor. Your only light \nsource is a flickering incandescent bulb screwed within a grate covered \naluminum fixture.", [], [], "", "", "", "")
+room02 = Room("A Hallway Lined with Cells", "You are in a long hallway lined with solid, windowless doors, each \napparently leading to a cell. The hallway stretches to the east and \nwest and the cell you emerged from is to the south.", [], [], "", "", "", "")
+room03 = Room("East End of the Hallway", "You are at the eastern end of the cell lined hallway. The hallway leads \nto a dead end--however, it appears a large hole has been blasted in the \nmiddle of the floor here. The pit is shadowy and you cannot tell what \nlies beyond.", [], [], "", "", "", "")
+room04 = Room("West End of the Hallway", "You are at the western end of the hallway. Besides the numerous cell doors \nto the north and south, there is a strange symbol on the western wall.", [], [], "", "", "", "")
+room05 = Room("Northwestern corner of a Ballpit", "You are at the northwest corner of the ballpit.", [], [], "", "", "", "")              
+room06 = Room("Northern side of a Ballpit", "You are at the northern side of the ballpit.", [], [], "", "", "", "")              
+room07 = Room("Northeastern corner of a Ballpit", "You are at the northeast corner of the ballpit.", [], [], "", "", "", "")
+room08 = Room("Western side of a Ballpit", "You are at the Western side of the ballpit.", [], [], "", "", "", "")
+room09 = Room("Center of a Ballpit", "You are in the center of the Google HQ's ballpit.", [], [], "", "", "", "")
+room10 = Room("Eastern side of a Ballpit", "You are at the Eastern side of the ballpit.", [], [], "", "", "", "")
+room11 = Room("Southwestern corner of a Ballpit", "You are at the southwestern corner of the ballpit.", [], [], "", "", "", "")
+room12 = Room("Southern side of a Ballpit", "You are at the southern side of the ballpit.", [], [], "", "", "", "")
+room13 = Room("Southeastern corner of a Ballpit", "You are in the southeastern corner of a ballpit.", [], [], "", "", "", "") 
+room02.add_exit_e(room03)
+room03.add_exit_w(room02)
+room02.add_exit_w(room04)
+room04.add_exit_e(room02)
+room09.add_exit_n(room06)
+room06.add_exit_s(room09)
+room09.add_exit_e(room10)
+room10.add_exit_w(room09)
+room09.add_exit_s(room12)
+room12.add_exit_n(room09)
+room09.add_exit_w(room08)
+room08.add_exit_e(room09)
+room05.add_exit_e(room06)
+room06.add_exit_w(room05)
+room06.add_exit_e(room07)
+room07.add_exit_w(room06)
+room05.add_exit_s(room08)
+room08.add_exit_n(room05)
+room07.add_exit_s(room10)
+room10.add_exit_n(room07)
+room11.add_exit_e(room12)
+room12.add_exit_w(room11)
+room12.add_exit_e(room13)
+room13.add_exit_w(room12)
+room11.add_exit_n(room08)
+room08.add_exit_s(room11)
+room13.add_exit_n(room10)
+room10.add_exit_s(room13)
 ballz = [item08, item09, item10, item11]
 kwords = {"spoon": item01, "rope": item02, "cot": item03, "door": item04, "key": item05, "shank": item07, "red": item08, "yellow": item09, "blue": item10, "green": item11}
 rooms = {'room01': room01, 'room02': room02, 'room03': room03, 'room04': room04, 'room05': room05, 'room06': room06, 'room07': room07, 'room08': room08, 'room09': room09, 'room10': room10, 'room11': room11, 'room12': room12, 'room13': room13}
+ballpit = [room05, room06, room07, room08, room09, room10, room11, room12, room13]
 items = {'item01': item01, 'item02': item02, 'item03': item03, 'item04': item04, 'item05': item05, 'item06': item06, 'item07': item07, 'item08': item08, 'item09': item09, 'item10': item10, 'item11': item11, 'item12': item12, 'item13': item13}
-
+demon = NPC("Ballpit Demon", "A tiny demon bounces around the ballpit here.", room09, "npc", [], 10)
 start()
 
 
