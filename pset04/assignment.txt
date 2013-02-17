@@ -1,0 +1,121 @@
+* Coin Purse
+
+    This question is intended to give you some practice with Python operator
+    overloading.
+
+    Your goal is to implement a class that represents a coin purse (i.e.
+    a set of coins of different values).  You should be able to compare
+    coin purses (greater than, less than, equal).  You should also be
+    able to add two coin purses together.
+
+    You can do all of these things using operator overloading.  See:
+    http://docs.python.org/2/reference/datamodel.html#basic-customization
+
+    Write your answer to this in coin.py by filling out all of the TODO
+    comments marked in code.  Feel free to add additional member functions
+    or member attributes as you see fit.
+
+
+* Definitions
+
+    Some folks say that you never really know what you know, until you have to
+    explain it to somebody else.  In this file, please answer the following
+    questions.  A paragraph or two should be all that is necessary.
+
+    1) What's the difference between a class and an object?
+
+
+    2) What is the difference between a "class method" and a "normal function"?
+
+
+    3) What is the difference between is-a and has-a?
+
+
+    4) What is one reason why somebody would choose to use a class when
+    organizing their program?
+
+
+* Optional: Coin purse pretty printing
+
+    Implement __str__ to print something like the following examples when
+    you print a CoinPurse:
+
+        5 quarters, 2 dimes, and 1 nickel
+        1 quarter and 5 pennies
+        3 nickels, 1 dime, and 1 penny
+        3 dimes
+
+    English is hard!
+
+
+* Optional: Coin purse unit tests
+
+    Add a new file called coin_test.py.  (Remember to git add this file!)
+
+    In that file, create unit tests for comparisons.  Consider adding unit
+    tests for the following edge cases:
+
+        * Creating an empty coin purse
+        * Creating a non-empty coin purse
+        * Adding two empty purses
+        * Adding an empty purse to a non-empty purse
+        * Adding two non-empty purses
+        * Comparing two purses with the same monetary value, but different coins
+        * Comparing two purses with different amounts
+        * Comparing the same two purses, but in the opposite order (i.e.
+            x < y, as well as checking y > x)
+        * Negative or floating point money (should this throw exceptions?)
+
+    If you do the coin purse removal function below, also add tests for that!
+
+
+* Optional: Coin purse coin removal
+
+    Here's a slightly tricky extension to the coin purse problem.
+
+    Add a function to CoinPurse called "def remove_money(amount)".  Amount
+    should be a floating point number with two decimal places (i.e. 5.32).
+
+    Consider throwing a ValueError if amount is not the right type or has
+    too many decimal places.
+
+    If the coin purse has the right amount of change to remove that amount,
+    remove_money should return a CoinPurse containing that amount.  If it does
+    not have the right amount of change, it should return None and leave the
+    object unchanged.
+
+    For example, if a CoinPurse p has 5 quarters and a dime, then calling
+    p.remove_money(0.12) should return None.  On the other hand, calling
+    p.remove_money(0.60) should return a CoinPurse with two quarters and
+    1 dime and p should be left with 3 quarters.  If there is more than
+    one way to generate a certain amount, then the CoinPurse can pick one
+    arbitrarily.
+
+
+* Optional: Advanced Python special member functions
+
+    This is a challenging optional exercise to expand your knowledge of Python
+    special member functions and of Python functions-as-objects.
+
+    Your goal is to write a class that pretends like it has every function.
+    Here's some example interaction with this kind of class.
+
+        >>> x = FunctionReporter()
+
+        >>> x.foo()
+        You called the 'foo' function.
+
+        >>> x.anything()
+        You called the 'anything' function.
+
+        >>> x.func_with_params(3, "x", True)
+        You called the 'func_with_params' function.
+        Arg 0: 3
+        Arg 1: 'x'
+        Arg 2: True
+
+    Since you can't add every potential function ever to FunctionReporter,
+    you have to figure out a way to have your class pretend like it has
+    every function using Python special member functions.
+
+    Take a look at reporter.py for more details.
