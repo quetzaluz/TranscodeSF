@@ -118,4 +118,9 @@
     you have to figure out a way to have your class pretend like it has
     every function using Python special member functions.
 
+    This kind of object is often useful when debugging your code.  For example,
+    to make sure that your code is calling the right functions in the right
+    order with the right arguments, you might put a FunctionReporter in a
+    situation that normally calls for a different object.
+
     Take a look at reporter.py for more details.
