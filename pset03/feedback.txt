@@ -1,0 +1,48 @@
+enne:
+
+Great work!  I'm sorry that git checkout caused you some woe.  If I had any
+general feedback for you, it's that you should work on brevity and precision.
+Being more verbose isn't always better, and boiling down your explanation to
+the most precise and simple form possible is a seriously important skill for
+any programmer.
+
+
+Re: library example.
+
+I would argue that Author is-a Person here, but I think your explanation also
+works.
+
+
+Re: fantasy game example.
+
+I appreciate your extra detail about earthquake spells and original Final
+Fantasy games.  It made me laugh.  :)
+
+I'm not sure that I buy FlyingEnemy being an attribute.  If it were an
+attribute, I think it'd be extremely poorly named.  You've sort of described an
+"is_flying" attribute.  One different way to do this would be to have:
+
+    FlyingEnemy is-a Enemy
+    Pixie is-a FlyingEnemy
+    Eagle is-a FlyingEnemy
+    Troll is-a Enemy
+    FlyingTroll is-a Troll *and* is-a FlyingEnemy
+
+...and then you could have the FlyingEnemy and Enemy class implement some
+is_flying function.
+
+
+Re: determining which function could get called.
+
+A more brief way to say this would be the following:
+
+    When looking up an attribute, Python recurses through its inheritance
+    hierarchy, starting with itself and then looking at each of its base
+    classes in left-to-right order.  As soon as it finds an attribute
+    definition, it uses that one.
+
+The word recurse here is important, because if you want to look up an attribute
+in Foo, you look at the first parent class of Foo, and then Foo's parent's
+parent classes, and then the parent classes of those parent classes (etc),
+before you look at the second base class that Foo derives from.  This is why
+the ZeroExtended example behaves the way it does.
