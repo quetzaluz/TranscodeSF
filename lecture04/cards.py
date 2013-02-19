@@ -114,8 +114,7 @@ class Deck:
         return self._isFlush() and self._isStraight()
 
     def _isFullHouse(self):
-        return self._ofAKind(3) is not None and 
-            self._ofAKind(2) is not None
+        return self._ofAKind(3) is not None and self._ofAKind(2) is not None
 
     def _highCard(self):
         best = self.cards[0]
@@ -149,3 +148,4 @@ h = Deck([Card(DIAMOND, 3), Card(SPADE, 3), Card(HEART, 3), Card(CLUB, 6), Card(
 j = Deck([Card(HEART, 4), Card(SPADE, 5), Card(DIAMOND, 8), Card(CLUB, 8), Card(HEART, 8)])
 print h._isFullHouse()
 print j._isFullHouse()
+print colorstr("Test.", "CYAN_BG")
