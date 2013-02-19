@@ -42,7 +42,7 @@ class Table:
         self.cards = []
         for suit in SUITS:
             for j in range(2,15):
-                cards.append(Card(suit, j))
+                self.cards.append(Card(suit, j))
 
     def getWholeDeck(self):
         """Return a Deck associated with this Table that has all the cards in it"""
@@ -61,22 +61,45 @@ class Card:
         return ret
 
 class Deck:
-    def __init__(self, cards):
+    def __init__(self, cards=None):
+        if cards is None:
+            cards = []
         self.cards = cards
 
     def draw(self):
         """Take the top card off this deck and return it"""
         return self.cards.pop()
 
+    def add(self, card):
+        self.cards.append(card)
+
     def shuffle(self):
         """Randomize the order of this Deck"""
         random.shuffle(self.cards)
+
+    def size(self):
+        return len(self.cards)
 
     def __str__(self):
         ret = ""
         for card in self.cards:
             ret = ret + str(card) + " "
         return ret
+
+    def _isTwoPair(self):
+        d = {}
+        e = {}
+        pairs = 0
+        for card in self.cards:
+            if card.value in d:
+                d[card.value] += 1
+            else:
+                d[card.value] = 1
+        for value in d:
+            if d[value] == 2:
+                pairs += 1
+        return pairs == 2
+
 
     def _isStraight(self):
         for start in range(2, 10):
@@ -114,8 +137,7 @@ class Deck:
         return self._isFlush() and self._isStraight()
 
     def _isFullHouse(self):
-        return self._ofAKind(3) is not None and 
-            self._ofAKind(2) is not None
+        return self._ofAKind(3) and self._ofAKind(2)
 
     def _highCard(self):
         best = self.cards[0]
@@ -123,6 +145,24 @@ class Deck:
             if card.value > best.value:
                 best = card
         return best
+
+    def _valueOfHand(self):
+        if self._isStraightFlush():
+            return 8
+        elif self._ofAKind(4):
+            return 7
+        elif self._isFullHouse():
+            return 6
+        elif self._isFlush():
+            return 5
+        elif self._isStraight():
+            return 4
+        elif self._ofAKind(3):
+            return 3
+        elif self._ofAKind(2):
+            return 2
+        else:
+            return 1
 
 
     def isBetterThan(self, other):
@@ -140,12 +180,27 @@ class Deck:
         """
         if len(self.cards) != 5:
             raise "Not five cards!"
+        return self._valueOfHand() > other._valueOfHand()
+
+def populateHand(receiving, giving):
+    while receiving.size() < 5:
+        receiving.add(giving.draw())
+
+def main():
+    table = Table()
+    player_1_hand = Deck()
+    player_2_hand = Deck()
+    total_deck = Deck(table.getWholeDeck())
+    total_deck.shuffle()
+    populateHand(player_1_hand, total_deck)
+    populateHand(player_2_hand, total_deck)
+    print "Player 1 hand", player_1_hand
+    print "Player 2 hand", player_2_hand
+    if player_1_hand.isBetterThan(player_2_hand):
+        print "Congradulations player 1, you win!"
+    else:
+        print "Go player 2, you win!"
 
 
+main()
 
-
-
-h = Deck([Card(DIAMOND, 3), Card(SPADE, 3), Card(HEART, 3), Card(CLUB, 6), Card(HEART, 5)])
-j = Deck([Card(HEART, 4), Card(SPADE, 5), Card(DIAMOND, 8), Card(CLUB, 8), Card(HEART, 8)])
-print h._isFullHouse()
-print j._isFullHouse()
