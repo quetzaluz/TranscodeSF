@@ -23,17 +23,26 @@
     questions.  A paragraph or two should be all that is necessary.
 
     1) What's the difference between a class and an object?
+A class defines all of the attributes and methods for use by instances of that class. Classes can inherit methods and attributes from one or more parent 
+classes. All instances of classes are objects. 
+   It is possible to create an object without using a class to construct it. However, these objects are still defined as different types, such as strings, integers, and lists. These type definitions determine how different operations (such as len(), >, is not) interact with the object.
 
 
     2) What is the difference between a "class method" and a "normal function"?
+You cannot call class methods or attributes within a class until you have created an instance of the class. If you call a class method without an instance, a temporary instance is made at __main__.Class. It is possible to call methods from a class without an instance using the @staticmethod decorator, but at that point defining a function would be preferred.
+   Normal functions are defined globally can be called at any time within any other definition, object, or statement. Unlike class methods which must always contain "self" as a parameter, it is possible for a function to have no parameters.
 
 
     3) What is the difference between is-a and has-a?
+   Below I've put a sample is-a and has-a relationship for use in my discussion:
+		[1] A is-a B			[2] C has-a D
+If A is-a B, that means it has many of the methods and attributes that B has. This is-a relationship can be established by making A a class or instance that inherits from B. However, it is also possible for A to have methods and characteristics that B does not have, and vice versa--an is-a relationship does *not* mean that both A and B are identical.
+   If C has-a D, that means D is a method, attribute, or other characteristic contained within C. Most often has-a relationships are established when a class or object [C] defines the attributes or methods [D] that it has.
 
 
     4) What is one reason why somebody would choose to use a class when
     organizing their program?
-
+Class definitions help with one of the most important goals in programming -- Don't repeat yourself. If you define an object without a class method and that object is altered or removed, you must manually create that object all over again without a class. Classes can serve as excellent templates for making other classes or objects, saving the programmer a lot of work.
 
 * Optional: Coin purse pretty printing
 

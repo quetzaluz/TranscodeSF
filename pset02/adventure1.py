@@ -2,10 +2,11 @@ import random
 import weakref
 import pickle
 
-## Borrowed the color code from cards.py to make the game more readable.
+## Borrowed the ANSI color code from cards.py to make the game more readable.
 COLORS = { 'ENDC':0,'DARK_RED':31,'RED':91,'RED_BG':41,'YELLOW':93,'YELLOW_BG':43,'BLUE':94,'BLUE_BG':44,'PURPLE':95,'MAGENTA_BG':45,'AUQA':96,'CYAN_BG':46,'GREEN':92,'GREEN_BG':42,'BLACK':30}
 def termcode(num):
     return '\033[%sm'%num
+#The code below toggles ANSI. IDLE and cmd.exe are lame, no ANSI support.
 color_on = None
 while True:
     cc = raw_input("Enable terminal color codes? (YES or NO)")
@@ -243,6 +244,66 @@ class NPC(Player):
         self.pc = pc # "active", "stored", or "npc" (string) 
         self.hp = hp #Health points of the character (int)
         self.inroom.pinv.append(self.ldesc)
+
+    def random_move(self, player):
+        exit_list = self.inroom.exits()
+        ran_room = random.choice(exit_list)
+        if ran_room == "N":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the north."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_n()
+            self.inroom.pinv.append(self.ldesc)
+        if ran_room == "E":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the east."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_e()
+            self.inroom.pinv.append(self.ldesc)
+        if ran_room == "S":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the south."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_s()
+            self.inroom.pinv.append(self.ldesc)
+        if ran_room == "W":
+            if self.inroom == player.inroom:
+                print "A " + self.name.lower() + " bounces off to the west."
+            for person in self.inroom.pinv:
+                if person == self.ldesc:
+                    self.inroom.pinv.remove(self.ldesc)
+            self.go_w()
+            self.inroom.pinv.append(self.ldesc)
+
+    def demon_ai(self, player):
+        start_ai = False
+        for room in ini.ballpit:
+            if player.inroom == room:
+                start_ai = True
+        if start_ai is True:
+            if self.inroom == player.inroom:
+                self.random_move(player)
+#                if self.inroom.n == player.inroom:
+#                   self.throw(ball, player, n)
+#                if self.inroom.e == player.inroom:
+#                   self.throw(ball, player, e)
+#                if self.inroom.s == player.inroom:
+#                   self.throw(ball, player, s)
+#                if self.inroom.w == player.inroom:
+#                   self.throw(ball, player, w)
+            if self.inv <= 6:
+                for item in self.inroom.rinv:
+                    for ball in ballz:
+                        if item == ball:
+                             self.get_item(item)
+            else:
+                    self.random_move(player)
 
 class Room(object):
     def __init__(self, title, rdesc, rinv, pinv, n, e, s, w):
