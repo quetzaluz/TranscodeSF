@@ -1,18 +1,29 @@
 class CoinPurse(object):
     def __init__(self, quarters=0, dimes=0, nickels=0, pennies=0):
         # TODO: implement me!
-        self.quarters = quarters
-        self.dimes = dimes
-        self.nickels = nickels
-        self.pennies = pennies
+        try:
+            self.quarters = self.set_coin(quarters)
+            self.dimes = self.set_coin(dimes)
+            self.nickels = self.set_coin(nickels)
+            self.pennies = self.set_coin(pennies)
+        except NameError:
+            raise NameError('Cannot set coin value to that of an undefined variable.')
 
     def amount(self):
         """ Return the amount of money as a floating point value """
         # TODO: implement me!
         return self.ret_quarters() * 0.25 + self.ret_dimes() * 0.10 + self.ret_nickels() * 0.05 + self.ret_pennies() * 0.01
 
+    def set_coin(self, coin):
+        #This sets the init values for coins and catches exceptions.
+        if type(coin) is not int or coin <= -1:
+            raise ValueError('Coin parameter must be a positive integer, not %s.' % str(coin))
+        else:
+            return coin
+        
 # Note: I renamed these functions "ret_coin" because I wanted to eliminate
 # reference errors due to attributes being named the same thing.
+
     def ret_quarters(self):
         """ Returns the number of quarters as an integer """
         # TODO: implement me!
@@ -64,7 +75,14 @@ class CoinPurse(object):
             NotImplemented
         #It seems like I don't have to override __iadd__ for +=: the function
         #works just fine with the above definitions.
-            
+
+    def __sub__(self, other):
+        if isinstance(self, CoinPurse) is True and isinstance(other, CoinPurse) is True:
+            self.remove_money(other)
+        else:
+            NotImplemented
+
+    
     def __str__(self):
         coin_dict = {"quarter": self.quarters, "dime": self.dimes, "nickel": self.nickels, "penny": self.pennies}
         str_list = []
@@ -94,6 +112,42 @@ class CoinPurse(object):
             return str_list[0]
         elif str_list == []:
             return "There are no coins in this coin purse."
+
+    def remove_money(self, amount):
+        if type(amount) is not float or amount < 0:
+            raise ValueError('Amount must be a positive number with two decimal places.')
+        ramount = round(amount, 2)
+        if ramount != amount:
+            print "Amount of money to remove rounded to %.2f from %s" % (ramount, amount)
+        if self.amount() < ramount:
+            print "You cannot remove $%.2f with only $%s in your coin purse." % (amount, self.amount())
+            return False
+        if self.amount() >= ramount:
+            newamount = (self.amount()*100) - (ramount*100)
+            if newamount >= 25:
+                newq = (newamount - (newamount % 25)) / 25
+                newamount = newamount % 25
+            elif newamount < 25:
+                newq = 0
+            if newamount >= 10:
+                newd = (newamount - (newamount % 10)) / 10
+                newamount = newamount % 10
+            elif newamount < 10:
+                newd = 0
+            if newamount >= 5:
+                newn = (newamount - (newamount % 5)) / 5
+                newamount = newamount % 5
+            elif newamount < 5:
+                newn = 0
+            if newamount >= 1:
+                newp = newamount
+            elif newamount == 0:
+                newp = 0
+            self.quarters = int(newq)
+            self.dimes = int(newd)
+            self.nickels = int(newn)
+            self.pennies = int(newp)
+
         
 if __name__ == '__main__':
     x = CoinPurse(quarters=5, pennies=100)
