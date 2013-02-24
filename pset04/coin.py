@@ -5,7 +5,6 @@ class CoinPurse(object):
         self.dimes = dimes
         self.nickels = nickels
         self.pennies = pennies
-        self.sum = self.amount()
 
     def amount(self):
         """ Return the amount of money as a floating point value """
@@ -38,22 +37,22 @@ class CoinPurse(object):
     #       >, <, >=, <=, ==, != should all compare CoinPurse amounts.
 
     def __eq__(self, other):
-        return not self.sum.__ne__(other.sum)
+        return not self.amount().__ne__(other.amount())
 
     def __ne__(self, other):
-        return not self.sum.__eq__(other.sum)
+        return not self.amount().__eq__(other.amount())
 
     def __lt__(self, other):
-        return not self.sum.__ge__(other.sum)
+        return not self.amount().__ge__(other.amount())
 
     def __ge__(self, other):
-        return not self.sum.__lt__(other.sum)
+        return not self.amount().__lt__(other.amount())
 
     def __le__(self, other):
-        return not self.sum.__gt__(other.sum)
+        return not self.amount().__gt__(other.amount())
     
     def __gt__(self, other):
-        return not self.sum.__le__(other.sum)
+        return not self.amount().__le__(other.amount())
 
     # TODO: Override special functions to allow for adding two CoinPurses.
     #       You should support both + and +=.
@@ -93,7 +92,7 @@ class CoinPurse(object):
             return "%s and %s" % (str_list[0], str_list[1])
         elif len(str_list) == 1:
             return str_list[0]
-        elif str_list == 0:
+        elif str_list == []:
             return "There are no coins in this coin purse."
         
 if __name__ == '__main__':
@@ -125,6 +124,7 @@ if __name__ == '__main__':
     print z
     print combined
     print CoinPurse(quarters = 1, dimes = 1, nickels = 1, pennies = 1)
+    print CoinPurse()
     
 
     
