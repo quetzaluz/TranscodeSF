@@ -48,7 +48,22 @@ http://www.saltycrane.com/blog/2008/01/how-to-use-args-and-kwargs-in-python/
 """
 
 class FunctionReporter:
-    pass
+    def __getattr__(self, name):
+        strname = str(name)
+        def name(*args):
+            counter = 0
+            dict1 = {-1: "You called the '%s' function." % strname}
+            for arg in args:
+                dict1[counter] = arg
+                counter += 1
+            for entry in dict1:
+                if entry == -1:
+                    print dict1[-1]
+                else:
+                    print "Arg %s: %s" % (str(entry), str(dict1[entry]))
+        return name
+        
+            
 
 if __name__ == '__main__':
     x = FunctionReporter()
