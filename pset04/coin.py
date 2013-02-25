@@ -111,17 +111,24 @@ class CoinPurse(object):
         elif len(str_list) == 1:
             return str_list[0]
         elif str_list == []:
-            return "There are no coins in this coin purse."
+            return "no coins"
 
     def remove_money(self, amount):
-        if type(amount) is not float or amount < 0:
-            raise ValueError('Amount must be a positive number with two decimal places.')
+        if type(amount) is not float:
+            if type(amount) is int:
+                amount = amount *1.00
+            else:
+                return None
+                raise ValueError('The amount must be a float with two decimal places.')
+        if amount < 0:
+            return None
+            raise ValueError('The amount must be a negative value.')
         ramount = round(amount, 2)
         if ramount != amount:
             print "Amount of money to remove rounded to %.2f from %s" % (ramount, amount)
         if self.amount() < ramount:
             print "You cannot remove $%.2f with only $%s in your coin purse." % (amount, self.amount())
-            return False
+            return None
         if self.amount() >= ramount:
             newamount = (self.amount()*100) - (ramount*100)
             if newamount >= 25:
@@ -147,6 +154,8 @@ class CoinPurse(object):
             self.dimes = int(newd)
             self.nickels = int(newn)
             self.pennies = int(newp)
+            print "The purse now contains " + self.__str__() + "."
+            return self
 
         
 if __name__ == '__main__':

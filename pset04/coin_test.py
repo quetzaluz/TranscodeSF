@@ -67,11 +67,15 @@ class TestCoinPurse(unittest.TestCase):
         self.assertRaises(ValueError, coin.CoinPurse, 0, 10000, -1, 3)
         self.assertRaises(ValueError, coin.CoinPurse, 1,1,1,self.val2)
 
-#        with self.assertRaises(ValueError):
-#            random.sample(self.seq, 20)
-#        for element in random.sample(self.seq, 5):
-#            self.assertTrue(element in self.seq)
-
+    def testRemoveMoney(self):
+        self.assertIsNone(self.val3.remove_money(self.val2.amount())) #Cannot subtract the value of a purse that is more than self.amount().
+        self.assertTrue(self.val2.remove_money(1.0495)) # CAN subtract floats with more than two decimals thanks to rounding--think gasoline prices.
+        self.assertIsNone(self.val2.remove_money(50.0005)) #Cannot subtract values larger than purse amount.
+        self.assertIsNone(self.val2.remove_money(-1.00)) #Cannot subtract negative values.
+        self.assertIsNone(self.val2.remove_money('butts')) #Cannot subtract string values.
+        self.assertIsNone(self.val2.remove_money(self.val3)) #Cannot subtract objects
+        self.assertTrue(self.val1.remove_money(2)) #CAN subtract integers less than purse amount.
+        self.assertIsNone(self.val2.remove_money(100)) #Cannot subtract integers larger than purse amount.
     
         
 if __name__ == '__main__':
