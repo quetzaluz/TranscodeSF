@@ -1,0 +1,57 @@
+.review {
+
+}
+
+.toc {
+	width: 200px;
+	position: absolute;
+	left: 0px;
+}
+
+.main {
+	width: 600px;
+	position: absolute;
+	left: 200px;
+}
+
+.review img {
+	float: right;
+	margin: 15px;
+}
+
+.review p {
+	text-align: justify;
+}
+
+.review .spoiler {
+	color: white;
+	border-bottom: 1px solid grey;
+	border-left: 1px solid grey;
+	border-right: 1px solid grey;
+}
+
+.toc li {
+	list-style-type: none;		
+	border: 2px solid grey;
+	margin: 15px;
+}
+
+.toc ul {
+	padding-left: 10px;
+}
+
+.toc a {
+	text-decoration: none;
+	color: grey;
+}
+
+/*
+Dropcaps.
+*/
+.review-text p:first-child:first-letter {
+    font-size: 30pt;
+    float: left;
+    padding-top: 0px;
+    padding-right: 3px;
+    line-height: 26pt;
+}

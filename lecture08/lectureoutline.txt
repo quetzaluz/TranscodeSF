@@ -1,0 +1,42 @@
+* Intro to HTML
+* A little history
+* Paired tags
+  - Tags can close themselves if necessary.
+* Basic structure and formatting
+* Tags can have properties
+  - Links and anchors (make a TOC).
+  - Images (put covers)
+* Must be tree-structured.
+  - Show non-tree
+  - Some browsers can deal, but don't guarantee.
+
+* Intro to CSS
+  - Talk about how HTML was supposed to be semantic and structural,
+    rather than formatting.
+  - Talk about <div>s with classes, to add structure to a document.
+  - (sorry "class" is such an overloaded term)
+* Wrap things in divs, and make various things different garish colors, show the
+  structure of the document
+  - Talk about different ways you can represent colors. (hex, name)
+  - Also take a look at structure with the dev console
+* Make the TOC a sidebar (float, width), (position:absolute, width)
+  - Talk about different ways you can represent lengths. (percent, px)
+* Talk about margin vs. padding
+* Make images in reviews float right ( > selector)
+* First-letter drop-caps (p:first-child:first-letter)
+* Spoiler white-on-white
+* Special format for author, review author.
+* Justify
+
+* Format sidebar
+  - Remove list item decorators
+  - Put list items in boxes
+  - Fix margins
+  - Remove text-decoration from links
+
+* Talk about this in terms of how tedious it might have been to combine 20 or 30
+  book reviews in -- how you really want a *program* to spit out this web site.
+
+* In-class exercise:
+  - Look in classresources for their own copy of what we did in class
+  - Change the format in a specified way or two.
