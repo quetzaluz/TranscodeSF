@@ -1,0 +1,143 @@
+* Reading: HTTP requests and responses
+
+    Read the first half of this document about HTTP/1.0:
+
+        http://www.jmarshall.com/easy/http/
+
+    This reading will be a good refresher and resource for how HTTP requests
+    and responses work.  You're welcome to read the second half about HTTP/1.1,
+    but that's less important.
+
+    You can also check out what your browser is sending as an HTTP request
+    here and some analysis about what that is here:
+
+        http://djce.org.uk/dumprequest
+
+
+* Implement a web server (seriously!)
+
+    In the pset05 directory, you should see a webserver.py file.  Try running
+    webserver.py and then connecting to http://localhost:8000 in a web browser.
+    You should an error that looks something like one of these:
+
+        No data received, unable to load the webpage because the sever sent no
+        data.
+
+        This webpage is not available.
+
+        The connection to the server was reset while the page was loading.
+
+    If you get an "unable to connect" or "could not connect to..." error, then
+    it means that the server isn't running at all.
+
+    Take a look at webserver.py.  This Python program uses the SocketServer
+    class to implement a server.  For some really poor documentation, see:
+
+        http://docs.python.org/2/library/socketserver.html
+
+    Your job is the following:
+
+    (1) Implement a request-handling function.
+
+        Add a function called handle in HttpRequestHandler that takes no
+        parameters.  This function overrides a function in BaseRequestHandler
+        (the parent class of StreamRequestHandler) and will get called when
+        anybody connects to your server.
+
+        If you add some debug print statements (e.g. print "handling!") to
+        this function and then run webserver.py, you will see that print
+        out every time you reload http://localhost:8000 in a browser.
+
+    (2) Send a response.
+
+        SocketServer.StreamRequestHandler provides a file abstraction for
+        the HTTP response that gets sent via the self.wfile attribute.
+        In other words, anything you write to the self.wfile "file" will
+        get sent as the response.
+
+        You can think of the data being sent over a TCP/IP connection as
+        being an infinitely long file.  On the receiving end, you're
+        reading that file.  You will never get to the end of the file,
+        but if you try to read past the end of what has been sent, it
+        will just wait forever until more data has been sent.  On the
+        sending end, you're writing to that file.  You just keep
+        writing more and more lines until you're done.
+
+        There's no need to open or close these file objects.  The base class
+        StreamRequestHandler takes care of that for you.
+
+        If you need a refresher on how file objects work in Python, (re)read:
+
+            http://docs.python.org/2/tutorial/inputoutput.html#methods-of-file-objects
+
+        So, you just need to write a response to the self.wfile file.  You
+        should at least send a status line with a status of 200 (OK),
+        possibly a header of 'Content-type: text/html', and then as the
+        data part of the response, send a very basic HTTP page, possibly
+        one that just says "Hello World!" (with appropriate HTML tags).
+
+        Once your handle function writes this response, you should be able to
+        run webserver.py, open http://localhost:8000 in a browser, and see your
+        HTML page.
+
+    (3) Parse the headers and send error messages
+
+        Try going to:
+
+            http://localhost:8000/this/doesnt/exist/but/still/works.html
+
+        You may notice that your web server returns the same page no matter
+        what page you go to.  Even invalid HTTP requests will return a valid
+        HTTP response for that same page.
+
+        Your goal is to make your web server only respond to a proper GET
+        request for the /index.html resource. You should do the following:
+
+            A GET request for /index.html should return 200 ok with a page.
+
+            Requests to GET other resources should respond with 404 not found.
+
+            Any command other than GET should respond with 501 not implemented.
+
+            An illegal initial request line should get a 400 bad request.
+
+        Like wfile, StreamRequestHandler also provides a file abstraction
+        for reading the request.  self.rfile acts like a file, in that you
+        can loop over it or call self.rfile.readline() to get a line.
+
+        You can do this to read the initial HTTP request line and then
+        all of the HTTP request headers.
+
+        Hint 1: Remember that this is an infinite file, so the following code
+        is an infinite loop:
+
+            for line in self.rfile:
+                print line.strip()
+
+        Hint 2: When reading through an HTTP request, what's the signal that
+        you're at the end of a request?
+
+
+* Optional: Make your web server load multiple html files from disk
+
+    Rather than having your Python web server generate a web page itself,
+    you could have it load files from disk and serve them up as web pages.
+
+    Add at least two files to the same directory as webserver.py, called
+    (at least) index.html and help.html.  Add more if you'd like.  Fill
+    out these pages with some basic HTML and CSS.
+
+    Modify your web server's handle function so that when a request comes in,
+    it figures out what resource the request is looking for and then loads that
+    file from disk.  If the file exists, it should return it as the response
+    data.  If the file doesn't, it should return 404 as necessary.
+
+    For example, an HTTP request like:
+
+        GET /index.html HTTP/1.0
+
+    ...or like:
+
+        GET /help.html HTTP/1.0
+
+    ...should both succeed and return the appropriate pages from disk.
