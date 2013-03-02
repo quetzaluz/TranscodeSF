@@ -1,0 +1,34 @@
+body {
+    background: url(horribleBackground.gif) repeat;
+}
+
+.mainTitle {
+    width: 620 px;
+    position: center;
+    font: 36pt Arial, serif;
+    color: #FF0000;
+    background: #55FF00;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    text-align: center;
+}
+.mainTitle:hover {
+    width: 620 px;
+    position: center;
+    font: 36pt Arial, serif;
+    color: #55FF00;
+    background: #FF0000;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    text-align: center;
+    cursor: move;
+}
+
+.linkbar {
+    width: 225px;
+    position: absolute;
+    left: 0px;
+    background: 
+}

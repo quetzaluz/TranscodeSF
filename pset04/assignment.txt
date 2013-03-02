@@ -94,7 +94,7 @@ Class definitions help with one of the most important goals in programming -- Do
     object unchanged.
 
     For example, if a CoinPurse p has 5 quarters and a dime, then calling
-    p.remove_money(0.12) [NOTE!!! I think the text here is a typo--should
+    p.remove_money(0.12) [NOTE: I think the text here is a typo--should
     subtract in both cases] should return None.  On the other hand, calling
     p.remove_money(0.60) should return a CoinPurse with two quarters and
     1 dime and p should be left with 3 quarters.  If there is more than
