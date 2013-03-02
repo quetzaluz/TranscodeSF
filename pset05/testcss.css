@@ -1,24 +1,22 @@
 body {
-    background: url(horribleBackground.gif) repeat;
+    background: #000000;
 }
 
 .mainTitle {
-    width: 620 px;
-    position: center;
-    font: 36pt Arial, serif;
-    color: #FF0000;
-    background: #55FF00;
+    position: top;
+    font: 40pt Arial, serif;
+    color: #1F1F1F;
+    background-color: #000000
     margin: 0px;
     border: 0px;
     padding: 0px;
     text-align: center;
 }
 .mainTitle:hover {
-    width: 620 px;
-    position: center;
-    font: 36pt Arial, serif;
-    color: #55FF00;
-    background: #FF0000;
+    position: top;
+    font: 40pt Arial, serif;
+    color: #1F1F1F;
+    background: url(oscilloscope.gif) 0px -330px repeat;
     margin: 0px;
     border: 0px;
     padding: 0px;
