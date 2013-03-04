@@ -1,0 +1,84 @@
+enne:
+
+Holy moly, you did the function reporter question!  That's really great!  I
+think you were the only person who even attempted it.
+
+Re: coin.
+
+Good work in general, although your remove_money function appears to transmute
+coins via some alchemical process.  Try running the following code:
+
+    too_many_pennies = CoinPurse(pennies=350)
+    print "Pre-remove:", too_many_pennies
+    too_many_pennies.remove_money(0.25)
+    print "Post-remove:", too_many_pennies
+
+
+In terms of code simplificaiton, you could consider simplifying this code here:
+
+    def __lt__(self, other):
+        return not self.amount().__ge__(other.amount())
+
+...and instead just write something like this:
+
+    def __lt__(self, other):
+        return self.amount() < other.amount()
+
+
+Re: coin unit tests.
+
+Good work using the assertRaises to test that your exceptions are what you
+expect.
+
+However, I don't think you can subtract 1.0495 from any coin purse.  What coin
+represents $0.005 again? ;)
+
+
+Re: function reporter question.
+
+If I had any real suggestion for your code, it's that you should think about
+how to make your code more simple, more elegant, and easier to read for other
+programmers.  (Often that other programmer is you a few weeks in the future who
+is angry at past you for making things so complicated!)  I think this is
+general feedback for your coin code too, but here's a specific example from the
+function reporter:
+
+Here's your name function for comparison:
+
+        def name(*args):
+            counter = 0
+            dict1 = {-1: "You called the '%s' function." % strname}
+            for arg in args:
+                dict1[counter] = arg
+                counter += 1
+            for entry in dict1:
+                if entry == -1:
+                    print dict1[-1]
+                else:
+                    print "Arg %s: %s" % (str(entry), str(dict1[entry]))
+
+I think something like this is a little bit more simple to read:
+
+        def name(*args):
+            print "You called the '%s' function." % strname
+            counter = 0
+            for arg in args:
+                print "Arg %d: %s" % (counter, arg)
+                counter += 1
+
+...or you could even drop the counter variable entirely and just say:
+
+        def name(*args):
+            print "You called the '%s' function." % strname
+            for index, arg in enumerate(args):
+                print "Arg %d: %s" % (index, arg)
+
+This last function makes it clear that the code is really only doing two
+things: it always prints out one line, and then it loops over args and prints
+one line for each of them.  Your original code has two for loops, a dictionary
+scheme, and an if/else conditional that you have to understand to know how the
+code works.  Does that make some sense why I'd consider that to be more
+complicated?
+
+This is not to say that your code is bad.  It works!  That counts for a good
+deal, but it could just be simpler and easier to read.

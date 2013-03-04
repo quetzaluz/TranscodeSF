@@ -168,6 +168,10 @@ if __name__ == '__main__':
     z = CoinPurse(pennies=350)
     print "%0.2f should be 3.50" % z.amount()
 
+    print "FOOBAR:", z
+    z.remove_money(0.25)
+    print "FOOBAR:", z
+
     if x < y:
         print "x should be less than y"
     if y > x:
