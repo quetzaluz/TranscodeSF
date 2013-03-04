@@ -1,22 +1,8 @@
-body {
-    background: #000000;
-}
-
 .mainTitle {
     position: top;
     font: 40pt Arial, serif;
     color: #1F1F1F;
-    background-color: #000000
-    margin: 0px;
-    border: 0px;
-    padding: 0px;
-    text-align: center;
-}
-.mainTitle:hover {
-    position: top;
-    font: 40pt Arial, serif;
-    color: #1F1F1F;
-    background: url(oscilloscope.gif) 0px -330px repeat;
+    background: url(oscilloscope.gif) 0px -60px repeat;
     margin: 0px;
     border: 0px;
     padding: 0px;
@@ -24,9 +10,45 @@ body {
     cursor: move;
 }
 
-.linkbar {
-    width: 225px;
-    position: absolute;
-    left: 0px;
-    background: 
+.mainTitle:hover {
+    position: top;
+    font: 40pt Arial, serif;
+    color: red;
+    background: #000000;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+/* This defines titles for index.html */
+.subTitle1 {
+
+}
+
+/* This defines titles for help.html*/
+.subTitle2 {
+}
+.linkBar {
+    position: center;
+    text-align: center;
+    background: #1F1F1F;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+.linkBar a {
+    text-decoration: none;
+    color: red;
+    background: #1F1F1F
+    margin-right:20px;
+    margin-left:20px;
+}
+
+.linkBar a:hover {
+    text-decoration: none;
+    color: red;
+    background: url(horribleBackground.gif) 0px 0px repeat;
 }
