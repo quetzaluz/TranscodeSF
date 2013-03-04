@@ -51,9 +51,16 @@ class FunctionReporter:
     def __getattr__(self, name):
         strname = str(name)
         def name(*args):
-            print "You called the '%s' function." % strname
-            for index, arg in enumerate(args):
-                print "Arg %d: %s" % (index, arg)
+            counter = 0
+            dict1 = {-1: "You called the '%s' function." % strname}
+            for arg in args:
+                dict1[counter] = arg
+                counter += 1
+            for entry in dict1:
+                if entry == -1:
+                    print dict1[-1]
+                else:
+                    print "Arg %s: %s" % (str(entry), str(dict1[entry]))
         return name
         
             
