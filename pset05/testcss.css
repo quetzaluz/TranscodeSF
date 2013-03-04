@@ -21,14 +21,29 @@
     text-align: center;
 }
 
-/* This defines titles for index.html */
-.subTitle1 {
-
+.articleLeft {
+    width: 50%;
+    float: left;
+    font: 14pt Arial, serif;
+    color: black;
+    background: #D10000;
+}
+.articleRight {
+    width: 50%;
+    float: right;
+    font: 14pt Arial, serif;
+    color: black;
+    background: #D18800;
 }
 
-/* This defines titles for help.html*/
-.subTitle2 {
 }
+/* Below t1 stands for title 1 */
+. t1 {
+    font-size: 30pt;
+    position: center;
+    text-align: center
+}
+
 .linkBar {
     position: center;
     text-align: center;
