@@ -1,8 +1,8 @@
 .mainTitle {
     position: top;
     font: 40pt Arial, serif;
-    color: #1F1F1F;
-    background: url(oscilloscope.gif) 0px -60px repeat;
+    color: #4d4d4d;
+    background: #000000;
     margin: 0px;
     border: 0px;
     padding: 0px;
@@ -26,14 +26,14 @@
     float: left;
     font: 14pt Arial, serif;
     color: black;
-    background: #D10000;
+    background: #4d4d4d;
 }
 .articleRight {
     width: 50%;
     float: right;
     font: 14pt Arial, serif;
     color: black;
-    background: #D18800;
+    background: #313131;
 }
 
 }
@@ -64,6 +64,10 @@
 
 .linkBar a:hover {
     text-decoration: none;
-    color: red;
-    background: url(horribleBackground.gif) 0px 0px repeat;
+    color: orange;
+}
+
+.imageFrame {
+    text-align: center;
+    background: url(ornate1.png) 0px 0px repeat;
 }
