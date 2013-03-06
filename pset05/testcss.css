@@ -1,7 +1,7 @@
 .mainTitle {
     position: top;
-    font: 40pt Arial, serif;
-    color: #4d4d4d;
+    font: 40pt Palatino, serif;
+    color: orange;
     background: #000000;
     margin: 0px;
     border: 0px;
@@ -12,7 +12,7 @@
 
 .mainTitle:hover {
     position: top;
-    font: 40pt Arial, serif;
+    font: 40pt Palatino, serif;
     color: red;
     background: #000000;
     margin: 0px;
@@ -21,18 +21,29 @@
     text-align: center;
 }
 
-.articleLeft {
-    width: 50%;
+.article .left {
+    width: 47%;
     float: left;
-    font: 14pt Arial, serif;
-    color: black;
+    font: 12pt Palatino, serif;
+    text-align: right;
+    color: white;
     background: #4d4d4d;
 }
-.articleRight {
-    width: 50%;
+
+.article .center{
+    width: 6%;
+    float: left;
+    font: 12pt Palantino, serif;
+    text-align: center;
+    color: orange;
+    background:#1f1f1f;
+}
+
+.article .right {
+    width: 47%;
     float: right;
-    font: 14pt Arial, serif;
-    color: black;
+    font: 12pt Palatino, serif;
+    color: white;
     background: #313131;
 }
 
@@ -70,4 +81,5 @@
 .imageFrame {
     text-align: center;
     background: url(ornate1.png) 0px 0px repeat;
+    padding: 20px;
 }
