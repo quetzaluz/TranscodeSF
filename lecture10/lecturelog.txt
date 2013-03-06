@@ -1,0 +1,126 @@
+Last login: Tue Mar  5 17:57:16 on ttys003
+gobo:~ naomi$ cd transcode/assignments-s13/lecture10/
+gobo:lecture10 naomi master u=$ ls
+animals.py	animals.py~	data.sqlite
+gobo:lecture10 naomi master u=$ rm animals.py~
+gobo:lecture10 naomi master u=$ ls
+animals.py	data.sqlite
+gobo:lecture10 naomi master u=$ sqlite3 data.sqlite 
+SQLite version 3.7.12 2012-04-03 19:43:07
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> select * from species;
+1|cow|moo
+2|duck|quack
+3|sheep|baaaa
+4|cat|mew
+5|dog|woof
+6|wolf|awooooo
+7|amoeba|squoosh
+sqlite> show tables;
+Error: near "show": syntax error
+sqlite> 
+sqlite> 
+sqlite> ^Dgobo:lecture10 naomi master u=$ 
+gobo:lecture10 naomi master u=$ 
+gobo:lecture10 naomi master u=$ 
+gobo:lecture10 naomi master u=$ ls
+animals.py	data.sqlite
+gobo:lecture10 naomi master u=$ python
+Python 2.7.2 (default, Jun 20 2012, 16:23:33) 
+[GCC 4.2.1 Compatible Apple Clang 4.0 (tags/Apple/clang-418.0.60)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sqlalchemy as SA
+>>> db = MetaData()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'MetaData' is not defined
+>>> db = SA.MetaData()
+>>> db.bind = SA.create_engine("sqlite:///data.sqlite")
+>>> help db
+  File "<stdin>", line 1
+    help db
+          ^
+SyntaxError: invalid syntax
+>>> help(db)
+
+>>> db.reflect()
+>>> animals = db.animals
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'MetaData' object has no attribute 'animals'
+>>> help(db)
+
+>>> db['animals']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'MetaData' object is not subscriptable
+>>> help(db)
+
+>>> animals = db.tables['animals']
+>>> species = db.tables['species']
+>>> elephant = species.insert().values(name="elephant", sound="meat-trumpet").execute()
+>>> elephant
+<sqlalchemy.engine.result.ResultProxy object at 0x109fadd10>
+>>> elephant.inserted_primary_key
+[8]
+>>> 
+>>> 
+>>> 
+>>> species.insert()
+<sqlalchemy.sql.expression.Insert object at 0x10a32c610>
+>>> ins = species.insert()
+>>> insval = ins.values(name="kangaroo", sound="sproing")
+>>> insval.execute()
+<sqlalchemy.engine.result.ResultProxy object at 0x109fadfd0>
+>>> species.c
+<sqlalchemy.sql.expression.ImmutableColumnCollection object at 0x109fad650>
+>>> species.c.name
+Column(u'name', VARCHAR(), table=<species>)
+>>> species.c.sound
+Column(u'sound', VARCHAR(), table=<species>)
+>>> sel = SA.select([animals.c.name, animals.c.species])
+>>> for row in sel:
+...     print row["name"], row["species"]
+... 
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'Select' object is not iterable
+>>> sel = SA.select([animals.c.name, animals.c.species]).execute()
+>>> for row in sel:
+...     print row["name"], row["species"]
+... 
+bubbles 5
+jones 6
+jacob 0
+fido 2
+mimi 0
+jareth 1
+isis 6
+titania 6
+parsnip 3
+>>> sel = SA.select([animals.c.name, species.c.name]).where(animals.c.species == species.c.id)
+>>> sel = sel.execute()
+>>> for row in sel:
+...     print row[animals.c.name], row[species.c.name]
+... 
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+sqlalchemy.exc.InvalidRequestError: Ambiguous column name 'animals.name' in result set! try 'use_labels' option on select statement.
+>>>     print row[0], row[1]
+  File "<stdin>", line 1
+    print row[0], row[1]
+    ^
+IndentationError: unexpected indent
+>>> for row in sel:
+...     print row[0], row[1]
+... 
+jones wolf
+fido duck
+jareth cow
+isis wolf
+titania wolf
+parsnip sheep
+>>> animals.c.species == species.c.id
+<sqlalchemy.sql.expression.BinaryExpression object at 0x109faded0>
+>>> 
