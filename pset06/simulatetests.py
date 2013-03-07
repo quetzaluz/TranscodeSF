@@ -61,13 +61,14 @@ def generate_fake_tests():
     return tests
 
 
-def report(run, name, success):
+def report(run, name, success, pr=True):
     dots = "."*(50-len(name))
     if success:
         success = "PASS"
     else:
         success = "FAIL"
-    print name, dots, success
+    if pr:
+        print name, dots, success
     ins = tests.insert().values(run=run, name=name, status=success).execute()
 
 def start_run():
