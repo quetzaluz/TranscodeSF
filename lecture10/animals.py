@@ -3,14 +3,27 @@ from sqlalchemy import create_engine
 from sqlalchemy import select
 import random
 
-#Code that loads the database is called under '__main__' at end of file.
+db = MetaData()
+db.bind=create_engine('sqlite:///data.sqlite')
+
+animals = Table("animals", db,
+ Column("id", Integer, primary_key=True),
+ Column("name", String),
+ Column("species", None, ForeignKey("species.id")))
+
+species = Table("species", db,
+ Column("id", Integer, primary_key=True),
+ Column("name", String),
+ Column("sound", String))
+
+db.create_all()
  
 ##Pretty prints a join of the animal and species tables in data.sqlite
 def print_join():
     as_join = select([animals.c.id, animals.c.name, species.c.id, species.c.name, species.c.sound]).where(animals.c.species == species.c.id)
     divider = "+-----+----------------+-----+----------------+----------------+"
     print divider
-    print "|a_id |     a.name     |s_id |     s.name     |     s.sound    |"
+    print "|a.id |     a.name     |s.id |     s.name     |     s.sound    |"
     print divider
     for row in as_join.execute():
         print "|%-5d|%-16s|%-5d|%-16s|%-16s|" % (row[0], row[1][0:15], row[2], row[3][0:15], row[4][0:15])
@@ -71,18 +84,3 @@ def breed(animal_1_id, animal_2_id):
     baby = animals.insert().values(name=new_a_name, species=new_s_id)
     baby.execute()
 
-if __name__ == '__main__':
-    db = MetaData()
-    db.bind=create_engine('sqlite:///data.sqlite')
-
-    animals = Table("animals", db,
-     Column("id", Integer, primary_key=True),
-     Column("name", String),
-     Column("species", None, ForeignKey("species.id")))
-
-    species = Table("species", db,
-     Column("id", Integer, primary_key=True),
-     Column("name", String),
-     Column("sound", String))
-
-    db.create_all()
