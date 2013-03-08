@@ -84,3 +84,5 @@ def breed(animal_1_id, animal_2_id):
     baby = animals.insert().values(name=new_a_name, species=new_s_id)
     baby.execute()
 
+print_join()
+
