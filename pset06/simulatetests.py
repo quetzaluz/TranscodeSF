@@ -57,11 +57,13 @@ def generate_fake_tests():
             prob = 1 - (1-prob)*(1-prob)*(1-prob)
         tests.append(FakeTest(" ".join([random.choice(WORDS1),
                                         random.choice(WORDS2),
-                                        random.choice(WORDS3)]), prob))
+                                        random.choice(WORDS3)]).strip(), prob))
     return tests
 
 
 def report(run, name, success, pr=True):
+    """Report on the success of a particular test in a particular run.
+       Optionally print that report to the console"""
     dots = "."*(50-len(name))
     if success:
         success = "PASS"
@@ -69,24 +71,24 @@ def report(run, name, success, pr=True):
         success = "FAIL"
     if pr:
         print name, dots, success
-    ins = tests.insert().values(run=run, name=name, status=success).execute()
+    # Along with printing (if pr is true), let the database know
+    # what the test result was.
 
 def start_run():
-    result = runs.insert().values(started=date.today()).execute()
-    return result.inserted_primary_key[0]
+    """Start a test run.  Return the test run's ID"""
 
-def end_run():
-    pass
+def end_run(id):
+    """End the test run with the given id"""
 
-def fake_run_tests():
+def fake_run_tests(pr=True):
     tests = generate_fake_tests()
     random.seed()
     run = start_run()
     for test in tests:
         success = (random.random() < test.prob)
         time.sleep(random.random()/10)
-        report(run, test.name, success)
-    end_run()
+        report(run, test.name, success, pr)
+    end_run(run)
 
 
 if __name__ == "__main__":
