@@ -2,10 +2,11 @@
 
 import random, time
 import sqlalchemy
-from datetime import date
+from datetime import datetime
 from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime
-from sqlalchemy import select
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime 
+from sqlalchemy import select, update
+from sqlalchemy.dialects.sqlite import DATETIME
 
 
 db = MetaData()
@@ -13,9 +14,8 @@ db.bind = create_engine('sqlite:///data.sqlite')
 
 runs = Table('runs', db,
              Column('id', Integer, primary_key=True),
-             Column('started', DateTime),
-             Column('ended', DateTime))
-
+             Column('started', DATETIME),
+             Column('ended', DATETIME))
 
 tests = Table('tests', db,
               Column('id', Integer, primary_key=True),
@@ -25,6 +25,7 @@ tests = Table('tests', db,
 
 
 db.create_all()
+
 
 # This file simulates a test run, which we'll then write a tool to analyze.
 
@@ -73,12 +74,24 @@ def report(run, name, success, pr=True):
         print name, dots, success
     # Along with printing (if pr is true), let the database know
     # what the test result was.
+    test_ins = tests.insert().values(name=name, status=success, run=run)
+    test_ins.execute()
 
 def start_run():
     """Start a test run.  Return the test run's ID"""
+    start_time = datetime.now()
+    new_run = runs.insert().values(started=start_time, ended=start_time)
+    new_run.execute()
+    sel1 = select([runs.c.id]).where(runs.c.started==start_time).execute()
+    for row in sel1:
+        run_id = row["id"]
+    return run_id
 
-def end_run(id):
+def end_run(idd): #changed the id keyword, id seems to be reserved.
     """End the test run with the given id"""
+    end_time = datetime.now()
+    upd = update(runs).where(runs.c.id==idd).values(ended=end_time)
+    upd.execute()
 
 def fake_run_tests(pr=True):
     tests = generate_fake_tests()
@@ -90,8 +103,11 @@ def fake_run_tests(pr=True):
         report(run, test.name, success, pr)
     end_run(run)
 
-
 if __name__ == "__main__":
     fake_run_tests()
-    for row in select([tests.c.name, tests.c.status]).execute():
-        print row["name"], row["status"]
+    print "TEST VALUES:"
+    for row in select([tests.c.id, tests.c.name, tests.c.status, tests.c.run]).execute():
+        print row["id"], row["name"], row["status"], row["run"]
+    print "RUN VALUES"
+    for row in select([runs.c.id, runs.c.started, runs.c.ended]).execute():
+        print row["id"], row["started"], row["ended"]
