@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 
 <html>
-
-  <head><title>Test Run Report</title></head>
-  <body><h1>Run # {{run_num}}</h1><br>Start Time: {{run_started}}<br>End Time: {{run_ended}}<br>
-</body>
-  {% for test in testlist %}
-  <p> {{test.0}}, {{test.1}}, {{test.2}}</p>
-  {% endfor %}
+  <head>
+    <title>Test Run #{{run_num}}  Report</title>
+    <link rel="stylesheet" type="text/css" href="../static/reporter.css"/>
+  </head>
+  <body>
+    <h1>Test Run #{{run_num}} Report</h1><br>
+    <p>Start Time: {{run_started}}</p>
+    <p>End Time: {{run_ended}}</p>
+    <div class="table1">
+      <table>
+	<tr style="background-color:#5858FA;">
+	  <td><b>Test ID</b></td>
+	  <td><b>Test Name</b></td>
+	  <td><b>Status</b></td>
+	</tr>
+	{% for test in test_list %}
+	{% if test.0 is even %}
+	<tr style="background-color:#EFF8FB;">
+	{% elif test.0 is odd %}
+	<tr style="background-color:#A9E2F3;">
+	{% endif %}
+	  <td>{{test.0}}</td>
+	  <td><a href="../test/{{test.1}}">{{test.1}}</a></td>
+	  {% if test.2 == 'PASS' %}
+	  <td><font color="green">{{test.2}}</font></td>
+	  {% elif test.2 == 'FAIL' %}
+	  <td><font color="red">{{test.2}}</font></td>
+	  {% endif %}
+	</tr>
+	{% endfor %}
+      </table>
+    </div>
+  </body>
 </html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Test "{{test_name}}" Report</title>
+    <link rel="stylesheet" type="text/css" href="../static/reporter.css"/>
+    
+  </head>
+  <body>
+    <h1>Test "{{test_name}}" Report</h1><br>
+    <p>{{current_status}}</p>
+    <p>{{previous_status}}</p>
+        <div class="table1">
+	  <table>
+	    <tr style="background-color:#5858FA;">
+	      <td><b>Test ID</b></td> <!-- Will work on styling better later -->
+	      <td><b>Test Name</b></td>
+	      <td><b>Status</b></td>
+	      <td><b>Run Number</b></td>
+	      <td><b>Run End Time</b></td>
+	    </tr>
+	    {% for run in run_list %}
+	    {% if run.0 is even %}
+	    <tr style="background-color:#EFF8FB;">
+	    {% elif run.0 is odd %}
+	    <tr style="background-color:#A9E2F3;">
+	    {% endif %}
+	    <td>{{run.0}}</td>
+	    <td>{{run.1}}</td>
+	    {% if run.2 == 'PASS' %}
+	    <td><font color="green">{{run.2}}</font></td>
+	    {% elif run.2 == 'FAIL' %}
+	    <td><font color="red">{{run.2}}</font></td>
+	    {% endif %}
+	    <td><a href="../run/{{run.3}}">{{run.3}}</a></td>
+	    <td>{{run.4}}</td>
+	    </tr>
+	{% endfor %}
+      </table>
+    
+    
