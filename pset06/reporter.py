@@ -34,9 +34,9 @@ def show_run(run_num):
 
 @app.route('/test/<test_name>')
 def show_test(test_name):
-    test_name = test_name.replace('%20', ' ') ## Not sure this is needed.
+    test_name = test_name.replace('%20', ' ') #May not be necessary
     run_list = []
-    for row in select([tests.c.id, tests.c.name, tests.c.status, tests.c.run, runs.c.ended]).where(tests.c.name==test_name).order_by(desc(runs.c.ended)).limit(10).execute():
+    for row in select([tests.c.id, tests.c.name, tests.c.status, tests.c.run, runs.c.ended]).where(and_(tests.c.name == str(test_name), tests.c.run == runs.c.id)).order_by(runs.c.ended).limit(10).execute():
         run_list.append([row[0], row[1], row[2], row[3], row[4]])
     current_status = ""    
     previous_status = ""
@@ -60,4 +60,5 @@ def show_test(test_name):
         
 
 if __name__ == '__main__':
+    app.debug = True
     app.run()
