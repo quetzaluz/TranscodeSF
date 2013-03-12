@@ -1,0 +1,9 @@
+You rocked this.  Nice website, nice use of CSS, everything.
+
+The one thing I'd suggest about your code is that you might have been able to
+repeat yourself less about returning HTTP error/OK headers if you wrote a
+function to do so that took the HTTP code and the message and output the HTTP
+header line.  Other than that, keep on keeping on.
+
+
+--Naomi
