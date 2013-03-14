@@ -10,15 +10,21 @@ body {
     padding: 10px;
 }
 
-.tr navy {
-    background-color: #0B173B;
-    text-color: white;
+button {
+	background-color:#63b8ee;
+	border:2px solid #3866a3;
+	display:inline-block;
+	color:#14396a;
+	font-family: "Lucida Console", monospace;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
 }
-
-.tr blue {
-    background-color: #5858FA;
+button:hover {
+	background-color:#468ccf;
 }
-
-.tr lblue {
-    background-color: #CEE3F6;
+button:active {
+	position:relative;
+	top:1px;
 }

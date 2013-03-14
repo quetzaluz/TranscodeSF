@@ -3,10 +3,14 @@
   <head>
     <title> Test "{{test_name}}" Report</title>
     <link rel="stylesheet" type="text/css" href="../static/reporter.css"/>
-    
   </head>
+{% extends "flashes.html" %}
+{% block body %}
   <body>
-    <h1>Test "{{test_name}}" Report</h1><br>
+    <h1>Test "{{test_name}}" Report</h1>
+    <form method="POST" action="/run_test">
+    <button type="submit">Run New Tests</button><br>
+    </form><br>
     <p>{{current_status}}</p>
     <p>{{previous_status}}</p>
         <div class="table1">
@@ -36,5 +40,5 @@
 	    </tr>
 	{% endfor %}
       </table>
-    
+{% endblock %}
     

@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import *
+from simulatetests import *
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ tests = Table('tests', db,
 
 db.create_all()
 
-@app.route('/run/<run_num>')
+@app.route('/run/<int:run_num>')
 def show_run(run_num):
     run_started = "No start time available... test run does not exist!"
     run_ended = "No end time available... test run does not exist!"
@@ -32,32 +33,42 @@ def show_run(run_num):
         test_list.append([row[0], row[1], row[2]])
     return render_template('run.html', run_num=run_num, run_started=run_started, run_ended=run_ended, test_list=test_list)
 
+@app.route('/run_test', methods = ['GET', 'POST'])
+def run_test():
+    if request.method == 'POST':
+        for row in select([runs.c.id, runs.c.started]).order_by(desc(runs.c.started)).limit(1).execute():
+            new_run_num = int(row[0]) + 1
+        fake_run_tests()
+        return redirect(url_for('show_run', run_num=new_run_num))
+    
+        
+    else:
+        return "Please click the run button to use this function."
+
 @app.route('/test/<test_name>')
 def show_test(test_name):
     test_name = test_name.replace('%20', ' ') #May not be necessary
     run_list = []
-    for row in select([tests.c.id, tests.c.name, tests.c.status, tests.c.run, runs.c.ended]).where(and_(tests.c.name == str(test_name), tests.c.run == runs.c.id)).order_by(runs.c.ended).limit(10).execute():
+    for row in select([tests.c.id, tests.c.name, tests.c.status, tests.c.run, runs.c.ended]).where(and_(tests.c.name == str(test_name), tests.c.run == runs.c.id)).order_by(desc(runs.c.ended)).execute():
         run_list.append([row[0], row[1], row[2], row[3], row[4]])
-    current_status = ""    
+    current_status = "Current Status: %s during run ending at %s." % (str(run_list[0][2]), str(run_list[0][4]))
     previous_status = ""
-##Going to code to make this loop run for both FAIL and PASS in two iterations.
-##But for now, this works.
     if run_list[0][2] == "PASS":
-        current_status = "Current Status: PASS during run ending at %s." % str(run_list[0][4])
-        for run in run_list:
-            if run[2] == "FAIL":
-                previous_satus = "Changed From:   FAIL during run ending at %s." % str(run[4])
-            elif run[2] != "FAIL": 
-                previous_status = "Changed From:   There is no record of a FAIL result for this test."
+        search_for = "FAIL"
     elif run_list[0][2] == "FAIL":
-        current_status = "Current Status: FAIL during test run ending at %s." % str(run_list[0][4])
-        for run in run_list:
-            if run[2] == "PASS":
-                previous_status = "Changed From:   PASS during test run ending at %s. " % str(run[4])
-            elif run[2] != "PASS": 
-                previous_status = "Changed From:   There is no record of a PASS result for this test."
+        search_for = "PASS"
+    else:
+        search_for = None
+    while previous_status == "" and search_for is not None:
+        for row in run_list:
+            if row[2] == search_for:
+                previous_status = "Last Change: %s during run ending at %s." % (str(row[2]), str(row[4]))
+                break
+            if row == run_list[-1]:
+                previous_status = "There is no record of this test having a different result."
+    run_list = run_list[0:10]
     return render_template('test.html', test_name=test_name, run_list=run_list, current_status=current_status, previous_status=previous_status)
-        
+    
 
 if __name__ == '__main__':
     app.debug = True
