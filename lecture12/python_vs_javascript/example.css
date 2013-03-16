@@ -1,0 +1,65 @@
+/* centering vertically isn't as easy as you'd think! */
+.centeredcontainer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: table;
+}
+
+.centeredrow {
+    display: table-row;
+}
+
+.centered {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.helplinks {
+    position: absolute;
+    margin: 15px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 1;
+    text-align: right;
+}
+
+.helplinks li {
+    list-style: none;
+}
+
+.bigredbutton {
+      background: darkred;
+      color: white;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      padding: 10px;
+      font: bold 30px sans-serif;
+}
+
+p {
+    color: darkgray;
+    font-family: sans-serif;
+}
+
+#console {
+    border: 1px dashed black;
+    width: 60%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 20px;
+    text-align: left;
+}
+
+#console p {
+    font-family: monospace;
+    margin: 0px;
+    padding: 0px;
+    color: black;
+}
