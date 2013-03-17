@@ -25,16 +25,15 @@ function runExample() {
     function isPrime(x) {
         for (var num = 2; num < x; num++) {
             // If x divides num evenly, then x is a factor of num.
-            if (x % num == 0) {
+            if (x % num == 0)
                 return false;
-            }
         }
         return true;
     }
 
     var testNumbers = [2, 6, 13, 8, 20];
     for (var idx = 0; idx < testNumbers.length; idx++) {
-        y = testNumbers[idx];
+        var y = testNumbers[idx];
         print(y + " is prime? " + isPrime(y));
     }
 
