@@ -2,16 +2,10 @@
 var WIDTH = 600;
 var HEIGHT = 400;
 
-var COLORS = {
-  red: "#f00",
-  orange: "#f60",
-  yellow: "#ff0",
-  green: "#0f0",
-  blue: "#00f",
-  indigo: "#509",
-  violet: "#909",
-  black: "#000"
-};
+var COLORS = [
+  "red",  "orange", "yellow", "green",
+  "blue", "indigo", "violet", "black"
+];
 
 
 // Globals for this file
