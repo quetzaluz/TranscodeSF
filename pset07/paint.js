@@ -18,9 +18,15 @@ var COLORS = {
 var canvas;
 var ctx;
 
+function each(obj, f) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      f(obj[key], key);
+    }
+  }
+};
 
 function init() {
-  document.onselectstart = function(){ return false; };
   canvas = document.getElementById("paint");
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
