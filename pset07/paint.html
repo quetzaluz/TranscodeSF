@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Transcode Paint</title>
+  <link rel="stylesheet" type="text/css" href="paint.css"/>
+  <script type="text/javascript" src="paint.js"></script>
+</head>
+
+<body>
+  <div class="toolbar">
+    <div class="color" id="red">&nbsp;</div>
+    <div class="color" id="orange">&nbsp;</div>
+    <div class="color" id="yellow">&nbsp;</div>
+    <div class="color" id="green">&nbsp;</div>
+    <div class="color" id="blue">&nbsp;</div>
+    <div class="color" id="indigo">&nbsp;</div>
+    <div class="color" id="violet">&nbsp;</div>
+    <div class="color" id="black">&nbsp;</div>
+  </div>
+  <br/>
+  <div class="paintDiv">
+    <canvas id="paint"></canvas>
+  </div>
+  <div class="assignment">
+    <h2>Make your own version of Paint</h2>
+    <p>The above is a HTML <tt>canvas</tt> and a group of <tt>div</tt>s with
+    colors, and <tt>id</tt>s of the names of their colors. Your job is to turn
+    it into a paint program, similar to the old mspaint you may
+    remember. Remember, for this pset it will be best to
+    use <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a>,
+    since some of the APIs are different on other browsers.</p>
+
+    <p>All the HTML you need to get started is right here in this file, so
+    you'll be focusing your efforts on <tt>paint.js</tt>.  Over there, what you
+    see is an init() function that is called when the HTML is done loading.  It
+    sets up the canvas to be ready to go, and creates a "context" from that
+    canvas that you can draw on.</p>
+
+    <p>One thing you may find useful is the <tt>each</tt> function included in
+    the javascript file.  See if you can figure out what it does. Hint: try this
+    in the javascript console&mdash;</p>
+
+    <pre>
+      var o = {
+        licorice: "black",
+        eggplant: "purple",
+        blueberries: "blue"
+      }
+      each(o, function (val, key) {
+        console.log(key, val);
+      });
+    </pre>
+
+    <p> Since we'll be using the HTML5 Canvas for this paint program, take some
+    time to
+    read <a href="http://blog.pluralsight.com/2012/10/16/getting-started-with-the-html5-canvas/">this
+    tutorial</a>.  Especially pay attention to
+    the <tt>moveTo</tt>, <tt>startPath</tt>, and <tt>stroke</tt> functions,
+    because we'll be getting some good mileage out of them.</p>
+
+    <p>Now that you've learned a little about the canvas, actually build a paint
+    program.  Here's the order I would suggest you'd do things in.</p>
+
+    <ul>
+      <li>Write a function to set up the toolbar <tt>div</tt>s above to be
+      clickable.  You already have an object, <tt>COLORS</tt> with all their ids
+      which are also the CSS code for their colors; write a loop
+      to <tt>addEventListener</tt> for the <tt>'click'</tt> event to each of
+      them that sets the pen color appropriately.  For now,
+      use <tt>console.log</tt> to make sure you're getting to the click handler
+      when you're clicking it, and setting the color to the right thing.  Then
+      call your function from <tt>init</tt></li>
+
+      <li>Write a function to handle what happens when you press the mouse
+      button down on the canvas (perhaps you start drawing at wherever the mouse
+      is?).  Add it as a <tt>'mousedown'</tt> event handler on the
+      canvas. Remember, an event handler is a function that takes an event as an
+      argument. Maybe use <tt>console.log</tt> to record the event's offsetX and
+      offsetY properties.</li>
+
+      <li>Write a function to handle what happens when the mouse button is
+      released.  Add it as a <tt>'mouseup'</tt> event handler on the
+      canvas.</li>
+
+      <li>Write a function to handle what happens when you move the mouse.  This
+      should be where you actually put pixels on the canvas.  Attach it as
+      a <tt>'mousemove'</tt> event handler on the canvas.</li>
+    </ul>
+
+    After doing these things, you should have a working basic paint program!
+    Here are some optional additions to this project:
+
+    <ul>
+      <li>A rectangle tool</li>
+      <li>An eraser</li>
+      <li>A clear button to clear the canvas</li>
+    </ul>
+  </div>
+</body>
+</html>

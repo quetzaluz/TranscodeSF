@@ -1,0 +1,58 @@
+canvas {
+    border: 1px solid black;
+}
+#red {
+    background-color: red;
+}
+#orange {
+    background-color: orange;
+}
+#yellow {
+    background-color: yellow;
+}
+#green {
+    background-color: green;
+}
+#blue {
+    background-color: blue;
+}
+#indigo {
+    background-color: indigo;
+}
+#violet {
+    background-color: violet;
+}
+#black {
+    background-color: black;
+}
+.toolbar {
+    float: none;
+    width: 600px;
+    height: 60px;
+}
+.color {
+    width: 60px;
+    height: 60px;
+    float: left;
+}
+
+#paint {
+    cursor: crosshair;
+    float: none;
+}
+
+#paint:active {
+    cursor: crosshair;
+}
+
+#paint:focus {
+    cursor: crosshair;
+}
+
+.assignment {
+    width: 600px;
+}
+
+.assignment p {
+    text-align: justify;
+}
