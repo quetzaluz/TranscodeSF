@@ -30,6 +30,38 @@ GameObject.prototype.draw = function(ctx) {
     ctx.fillRect(this.x, this.y, this.width, this.height);
 }
 
+PlayerScore.prototype = new GameObject();
+PlayerScore.prototype.constructor = PlayerScore;
+function PlayerScore() {
+  	this.font = "20px Arial";
+}
+
+PlayerScore.prototype.draw = function(ctx) {
+	ctx.fillText(canvas.width/2, canvas.height/2);
+}
+
+ComputerScore.prototype = new GameObject();
+ComputerScore.prototype.constructor = ComputerScore;
+function ComputerScore() {
+  	this.font = "20px Arial";
+}
+
+ComputerScore.prototype.draw = function(ctx) {
+	ctx.fillText(computer_score, 10, canvas.height - 10);
+}
+
+
+
+//
+//
+// GameObject.prototype.draw = function(p_score) {
+//	this.font = "20px Arial";
+//	this.fillText(player_score, 10, canvas.height - 10);
+// }
+//
+// GameObject.prototype.draw = function(c_score)
+
+
 // Define Ball class.  Javascript inheritance is kind of gross.
 Ball.prototype = new GameObject();
 Ball.prototype.constructor = Ball;
@@ -65,11 +97,15 @@ function Paddle() {
 Paddle.prototype.update = function(time_delta) {
     this.x += this.velocity_x * time_delta;
     this.y += this.velocity_y * time_delta;
-
+	
     // FIXME: paddles shouldn't be able to go off the top or bottom.
+	//
+	if (this.y < 0)
+		this.y = 0;
+	if (this.y > canvas.height - this.height)
+		this.y = canvas.height - this.height;
 }
 
-// This function runs repeatedly to update and redraw the game.
 function animate() {
     window.requestAnimationFrame(animate);
 
@@ -106,6 +142,22 @@ function animate() {
 
     // FIXME: do something (restart? rebound?) if the ball scores a point.
     // FIXME: maybe draw text on the canvas with the score?
+
+	//Player's side of the game screen.
+	if (ball.x < 0) {
+		computer_score += 1;
+		console.log("Computer score: " + computer_score);
+		ball.x = canvas.width / 2;
+		ball.y = canvas.height / 2;	
+	}
+	
+	//Computer's side.
+	if (ball.x > canvas.width) {
+		player_score += 1;
+		console.log("Player score: " + player_score);
+		ball.x = canvas.width / 2;
+		ball.y = canvas.height / 2;
+	}
 }
 
 
@@ -115,6 +167,14 @@ function run_computer_ai() {
 
     // Try uncommenting this:
     // computer_paddle.velocity_y = -computer_paddle.speed;
+	
+	if (ball.y > computer_paddle.y) {
+		computer_paddle.velocity_y = computer_paddle.speed - 0.25;
+	}
+
+	if (ball.y < computer_paddle.y) {
+		computer_paddle.velocity_y = -computer_paddle.speed + 0.25;
+	}
 }
 
 // Runs once at the beginning to set everything up.
@@ -129,6 +189,12 @@ function init() {
     ball.y = canvas.height / 2;
     ball.velocity_x = -0.2;
     ball.velocity_y = 0.3;
+
+	// Add score displays.
+	player_score = 0
+	computer_score = 0
+	p_score = new PlayerScore();
+	c_score = new ComputerScore();
 
     // Player paddle on the left, centered vertically.
     player_paddle = new Paddle();
