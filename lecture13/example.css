@@ -1,0 +1,7 @@
+#clickable {
+    width: 200px;
+    height: 200px;
+    background-color: red;
+    border: 5px solid black;
+    margin: 10px;
+}
