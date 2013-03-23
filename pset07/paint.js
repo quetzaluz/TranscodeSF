@@ -4,7 +4,9 @@ var HEIGHT = 400;
 var canvas;
 var ctx;
 var div_colors = document.getElementsByClassName("color");
-var pen_color = "black"; //default pen color, can change.
+var div_tools = document.getElementsByClassName("tool");
+var color_pick = "black"; //default tool color, can change.
+var tool_pick = "pen"; //default tool is pen
 var mouse_down = 0;
 var this_x;
 var this_y;
@@ -17,7 +19,7 @@ var COLORS = [
 ];
 
 var TOOLS = [
-	"pen", "rectangle"
+	"pen", "rect", "eraser", "clear"
 ];
 
 function each(obj, f) {
@@ -36,12 +38,17 @@ function init() {
   for (var color in COLORS) {
 		div_colors[color].addEventListener("click", toolBarColors);
 		div_colors[color].style.border = "5px solid white";
+	}
+	for (var tool in TOOLS) {
+		div_tools[tool].addEventListener("click", toolBarTools);
+		div_tools[tool].style.border = "5px solid white";
+	}
 	div_colors['black'].style.border = "5px solid cyan";
+	div_tools['pen'].style.border = "5px solid cyan";
 	canvas.addEventListener('mousedown', startLine);
 	canvas.addEventListener('mouseup', endLine);
 	canvas.addEventListener('mousemove', linePath);
 	canvas.addEventListener('mouseout', offCanvas);
-	}
 }
 
 
@@ -62,8 +69,19 @@ function toolBarColors(e) {
 	for (var color in COLORS) {
 		div_colors[color].style.border = "5px solid white";} 
 	e.target.style.border = "5px solid cyan";
-	pen_color = e.target.id;
-	console.log("Pen color is now " + pen_color);
+	color_pick = e.target.id;
+	console.log("Tool color is now " + color_pick);
+}
+
+function toolBarTools(e) {
+	for (var tool in TOOLS) {
+		div_tools[tool].style.border = "5px solid white";}
+	e.target.style.border = "5px solid cyan";
+	tool_pick = e.target.id;
+	console.log("Tool selected is now " + tool_pick);
+	if (tool_pick === "clear") {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+	}
 }
 
 function startLine(e) {
@@ -81,7 +99,7 @@ function linePath(e) {
 		e.preventDefault(); // Try to avoid error where dragging highlights elements.
 		console.log("Drawing Pen Line.")
 		ctx.lineWidth = 3;
-		ctx.strokeStyle = pen_color;
+		ctx.strokeStyle = color_pick;
 		ctx.beginPath();
 		ctx.moveTo(last_x, last_y);
 		ctx.lineTo(this_x, this_y);

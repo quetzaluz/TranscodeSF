@@ -25,15 +25,42 @@ canvas {
 #black {
     background-color: black;
 }
+
+#pen {
+		background: url(pencil.png);	
+}
+#rect {
+		background: url(draw_rect.png);
+}
+#eraser {
+		background: url(eraser.png);
+}
+#clear {
+		background: url(clear.jpg);
+}
+
+#blankslot {
+	width: 32px;
+	height: 32px;
+	float: left;
+}
 .toolbar {
     float: none;
     width: 600px;
-    height: 60px;
+    height: 50px;
 }
 .color {
-    width: 60px;
-    height: 60px;
+    width: 32px;
+    height: 32px;
     float: left;
+}
+
+.tool {
+		width: 32px;
+		height: 32px;
+		font-family: "Arial", Arial, sans-serif;
+		font-size: 10px;
+		float: left;
 }
 
 #paint {
