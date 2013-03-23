@@ -57,26 +57,30 @@ function toolBarColors(e) {
 }
 
 function startLine(e) {
-	console.log("Start Pen Line at " + (e.x - e.target.offsetLeft) + "," + (e.y - e.target.offsetTop));
+	console.log("Start Pen Line at " + (e.clientX + document.body.scrollLeft - e.target.offsetLeft) + "," + (e.clientY + document.body.scrollTop - e.target.offsetTop));
 	mouse_down = 1;
 	ctx.beginPath();
 }
 
 function linePath(e) {
+  var this_x = e.clientX + document.body.scrollLeft - e.target.offsetLeft;
+	var this_y = e.clientY + document.body.scrollTop - e.target.offsetTop;
 	if(mouse_down === 0) {
 		console.log("Not Drawing");}
 	if(mouse_down === 1) {
-		console.log("Drawing Pen Line.")
-		var this_x = e.x - e.target.offsetLeft;
-		var this_y = e.y - e.target.offsetTop;
-		ctx.lineWidth = 3;
-		ctx.strokeStyle = pen_color;
-		ctx.beginPath();
-		ctx.moveTo(last_x, last_y);
-		ctx.lineTo(this_x, this_y);
-		ctx.stroke();
-		lastCoords(this_x, this_y);
-	}
+		if(this_x < 0 || this_y < 0 || this_x > WIDTH || this_y > HEIGHT) {
+			mouse_down = 0;
+		}		
+		else {
+			console.log("Drawing Pen Line.")
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = pen_color;
+			ctx.beginPath();
+			ctx.moveTo(last_x, last_y);
+			ctx.lineTo(this_x, this_y);
+			ctx.stroke();
+			lastCoords(this_x, this_y);
+	}}
 }
 
 function endLine(e) {
