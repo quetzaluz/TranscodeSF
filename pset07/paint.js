@@ -52,11 +52,20 @@ function init() {
 }
 
 
-//Below is a helper function for the event listening scripts below.
+//Below are two helper functions for the event listening scripts below.
 function lastCoords(this_x, this_y) {
   last_x = this_x;
   last_y = this_y;
 	}
+
+function nowCoords(x_or_y, e) {
+	if (x_or_y === 'x') {
+		return e.clientX + document.body.scrollLeft - e.target.offsetLeft;
+	}
+	if (x_or_y === 'y') {
+		return e.clientY + document.body.scrollTop - e.target.offsetTop;
+	}
+}
 
 function offCanvas(e) {
 	mouse_down = 0;
@@ -79,37 +88,71 @@ function toolBarTools(e) {
 	e.target.style.border = "5px solid cyan";
 	tool_pick = e.target.id;
 	console.log("Tool selected is now " + tool_pick);
-	if (tool_pick === "clear") {
+	if (tool_pick === "clear") { //This is the only tool called this way--others will be called in the functions below.
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
 }
 
 function startLine(e) {
-	console.log("Start Pen Line at " + (e.clientX + document.body.scrollLeft - e.target.offsetLeft) + "," + (e.clientY + document.body.scrollTop - e.target.offsetTop));
 	mouse_down = 1;
-	ctx.beginPath();
+	if (tool_pick === "pen") {
+		console.log("Start Pen Line at " + (nowCoords('x', e)) + "," + (nowCoords('y', e)));
+		ctx.beginPath();
+	}else if (tool_pick === "rect") {
+		rect_x1 = nowCoords('x', e);
+		rect_y1 = nowCoords('y', e);
+		console.log("Start Rectangle at " + nowCoords('x', e) + "," + nowCoords('y', e));
+	}
 }
 
 function linePath(e) {
-  this_x = e.clientX + document.body.scrollLeft - e.target.offsetLeft;
-	this_y = e.clientY + document.body.scrollTop - e.target.offsetTop;
+  this_x = nowCoords('x', e);
+	this_y = nowCoords('y', e);
 	if(mouse_down === 0) {
 		console.log("Not Drawing");}
 	if(mouse_down === 1) {
-		e.preventDefault(); // Try to avoid error where dragging highlights elements.
-		console.log("Drawing Pen Line.")
-		ctx.lineWidth = 3;
-		ctx.strokeStyle = color_pick;
-		ctx.beginPath();
-		ctx.moveTo(last_x, last_y);
-		ctx.lineTo(this_x, this_y);
-		ctx.stroke();
-		lastCoords(this_x, this_y);
+		if (tool_pick === "pen"){
+			console.log("Drawing Pen Line.")
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = color_pick;
+			ctx.beginPath();
+			ctx.moveTo(last_x, last_y);
+			ctx.lineTo(this_x, this_y);
+			ctx.stroke();
+			lastCoords(this_x, this_y);
+		}else if (tool_pick === "rect") {
+			console.log("Drawing Rectangle")
+		}else if (tool_pick === "clear") {
+			tool_pick = "pen";
+		}
 	}
 }
 
 function endLine(e) {
-	ctx.closePath();
+	if (tool_pick === "pen") {
+		ctx.closePath();
+	} else if (tool_pick === "rect") {
+		rect_x2 = nowCoords('x', e);
+		rect_y2 = nowCoords('y', e);
+		rect_wid = rect_x2 - rect_x1;
+		rect_hei = rect_y2 - rect_y1;
+		if (rect_wid < 0) {
+			rect_wid = rect_wid * -1;
+		}
+		if (rect_hei < 0) {
+			rect_hei = rect_hei * -1;
+		}
+		if (rect_x1 < rect_x2 && rect_y1 > rect_y2) {
+			rect_y1 = rect_y2;
+		} else if (rect_x1 > rect_x2 && rect_y1 > rect_y2) {
+			rect_x1 = rect_x2;
+			rect_y1 = rect_y2;
+		} else if (rect_x1 > rect_x2 && rect_y1 < rect_y2) {
+			rect_x1 = rect_x2;
+		}
+		ctx.fillStyle = color_pick;
+		ctx.fillRect(rect_x1, rect_y1, rect_wid, rect_hei);
+	}
 	last_x = undefined;
 	last_y = undefined;
 	mouse_down = 0;
