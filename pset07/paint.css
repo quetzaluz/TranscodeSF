@@ -1,6 +1,14 @@
+/* Not sure how far I am going to go with this, but I am makingthe class before in effort to make multiple canvas layers. */
+
+.canvas_class {
+	
+}
+
 canvas {
     border: 1px solid black;
 }
+
+
 #red {
     background-color: red;
 }

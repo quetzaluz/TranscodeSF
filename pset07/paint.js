@@ -19,7 +19,7 @@ var COLORS = [
 ];
 
 var TOOLS = [
-	"pen", "rect_filled", "eraser", "clear"
+	"pen", "rect_filled", "rect_outline", "eraser", "clear"
 ];
 
 function each(obj, f) {
@@ -103,7 +103,7 @@ function startLine(e) {
 	if (tool_pick === "pen") {
 		console.log("Start Pen Line at " + (nowCoords('x', e)) + "," + (nowCoords('y', e)));
 		ctx.beginPath();
-	}else if (tool_pick === "rect_filled") {
+	}else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
 		rect_x1 = nowCoords('x', e);
 		rect_y1 = nowCoords('y', e);
 		console.log("Start Rectangle at " + nowCoords('x', e) + "," + nowCoords('y', e));
@@ -125,11 +125,12 @@ function linePath(e) {
 			ctx.lineTo(this_x, this_y);
 			ctx.stroke();
 			lastCoords(this_x, this_y);
-		}else if (tool_pick === "rect_filled") {
+		}else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
 			console.log("Drawing Rectangle")
 		}else if (tool_pick == "eraser") {
 			console.log("Using Eraser")
 			ctx.clearRect((nowCoords('x', e) - 3), ((nowCoords('y', e) -3)), 6, 6);
+			lastCoords(this_x, this_y);
 		}
 	}
 }
@@ -137,21 +138,21 @@ function linePath(e) {
 function endLine(e) {
 	if (tool_pick === "pen") {
 		ctx.closePath();
-	} else if (tool_pick === "rect_filled") {
+	} else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
 		rect_x2 = nowCoords('x', e);
 		rect_y2 = nowCoords('y', e);
-		rect_wid = rect_x2 - rect_x1;
-		rect_hei = rect_y2 - rect_y1;
-		if (rect_wid < 0) {
-			rect_wid = rect_wid * -1;
-		}
-		if (rect_hei < 0) {
-			rect_hei = rect_hei * -1;
-		}
+		rect_wid = Math.max(rect_x1, rect_x2) - Math.min (rect_x1, rect_x2);
+		rect_hei = Math.max(rect_y1, rect_y2) - Math.min (rect_y1, rect_y2);
 		rect_x = Math.min(rect_x1, rect_x2);
 		rect_y = Math.min(rect_y1, rect_y2);
-		ctx.fillStyle = color_pick;
-		ctx.fillRect(rect_x, rect_y, rect_wid, rect_hei);
+		if (tool_pick === "rect_filled") {
+			ctx.fillStyle = color_pick;
+			ctx.fillRect(rect_x, rect_y, rect_wid, rect_hei);
+		} else if (tool_pick === "rect_outline") {
+			ctx.strokeStyle = color_pick;
+			ctx.lineWidth = 3;
+			ctx.strokeRect(rect_x, rect_y, rect_wid, rect_hei);
+		}
 	}
 	last_x = undefined;
 	last_y = undefined;
