@@ -45,10 +45,10 @@ function init() {
 	}
 	div_colors['black'].style.border = "5px solid cyan";
 	div_tools['pen'].style.border = "5px solid cyan";
-	canvas.addEventListener('mousedown', startLine);
-	canvas.addEventListener('mouseup', endLine);
-	canvas.addEventListener('mousemove', linePath);
-	canvas.addEventListener('mouseout', offCanvas);
+	canvas.addEventListener('mousedown', onMouseDown);
+	canvas.addEventListener('mouseup', onMouseUp);
+	canvas.addEventListener('mousemove', onMouseMove);
+	canvas.addEventListener('mouseout', onMouseOut);
 }
 
 
@@ -65,15 +65,7 @@ function nowCoords(x_or_y, e) {
 	if (x_or_y === 'y') {
 		return e.clientY + document.body.scrollTop - e.target.offsetTop;
 	}
-}
-//Try just offset x and offset y from e.
-
-function offCanvas(e) {
-	mouse_down = 0;
-	last_x = undefined;
-	last_y = undefined;
-	console.log("Off Canvas.")
-}
+} //Try just offsetX and offsetY from e.
 
 function toolBarColors(e) {
 	for (var color in COLORS) {
@@ -89,56 +81,36 @@ function toolBarTools(e) {
 	e.target.style.border = "5px solid cyan";
 	tool_pick = e.target.id;
 	console.log("Tool selected is now " + tool_pick);
-	if (tool_pick === "clear") { //This is the only tool called this way--others will be called in the functions below.
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		for (var tool in TOOLS) {
-			div_tools[tool].style.border = "5px solid white";} 
-		div_tools['pen'].style.border = "5px solid cyan";
-		tool_pick = "pen";
+	if (tool_pick === "clear") { //This is the only tool called in toolbar
+		clearTool(e);
 	}
 }
 
-function startLine(e) {
-	mouse_down = 1;
-	if (tool_pick === "pen") {
+//The functions below handle tool behavior.
+function penTool (click_stage, color_pick, e) {
+	if (click_stage === "mouseDown"){
 		console.log("Start Pen Line at " + (nowCoords('x', e)) + "," + (nowCoords('y', e)));
 		ctx.beginPath();
-	}else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
+	} else if(click_stage === "mouseMove"){
+		console.log("Drawing Pen Line.")
+		ctx.lineWidth = 3;
+		ctx.strokeStyle = color_pick;
+		ctx.beginPath();
+		ctx.moveTo(last_x, last_y);
+		ctx.lineTo(nowCoords('x', e), nowCoords('y', e));
+		ctx.stroke();
+		lastCoords(nowCoords('x', e), nowCoords('y', e));
+	} else if(click_stage === "mouseUp"){
+		ctx.closePath();
+	}
+}
+function rectTool (click_stage, color_pick, e) {
+	if (click_stage === "mouseDown") {
 		rect_x1 = nowCoords('x', e);
 		rect_y1 = nowCoords('y', e);
 		console.log("Start Rectangle at " + nowCoords('x', e) + "," + nowCoords('y', e));
-	}
-}
-
-function linePath(e) {
-  this_x = nowCoords('x', e);
-	this_y = nowCoords('y', e);
-	if(mouse_down === 0) {
-		console.log("Not Drawing");}
-	if(mouse_down === 1) {
-		if (tool_pick === "pen"){
-			console.log("Drawing Pen Line.")
-			ctx.lineWidth = 3;
-			ctx.strokeStyle = color_pick;
-			ctx.beginPath();
-			ctx.moveTo(last_x, last_y);
-			ctx.lineTo(this_x, this_y);
-			ctx.stroke();
-			lastCoords(this_x, this_y);
-		}else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
-			console.log("Drawing Rectangle")
-		}else if (tool_pick == "eraser") {
-			console.log("Using Eraser")
-			ctx.clearRect((nowCoords('x', e) - 3), ((nowCoords('y', e) -3)), 6, 6);
-			lastCoords(this_x, this_y);
-		}
-	}
-}
-
-function endLine(e) {
-	if (tool_pick === "pen") {
-		ctx.closePath();
-	} else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
+	} else if (click_stage === "mouseMove") {
+	} else if (click_stage === "mouseUp") {
 		rect_x2 = nowCoords('x', e);
 		rect_y2 = nowCoords('y', e);
 		rect_wid = Math.max(rect_x1, rect_x2) - Math.min (rect_x1, rect_x2);
@@ -154,10 +126,63 @@ function endLine(e) {
 			ctx.strokeRect(rect_x, rect_y, rect_wid, rect_hei);
 		}
 	}
+}
+
+function eraserTool (e) {
+	//TODO: fill in later
+}
+
+function clearTool (e) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for (var tool in TOOLS) {
+			div_tools[tool].style.border = "5px solid white";} 
+		div_tools['pen'].style.border = "5px solid cyan";
+		tool_pick = "pen";
+}
+//The three functions below enable click functionality on the canvas.
+function onMouseDown(e) {
+	mouse_down = 1;
+	if (tool_pick === "pen") {
+		penTool("mouseDown", color_pick, e);
+	}else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
+		rectTool("mouseDown", color_pick, e);
+	}
+}
+
+function onMouseMove(e) {
+  this_x = nowCoords('x', e);
+	this_y = nowCoords('y', e);
+	if(mouse_down === 0) {
+		console.log("Not Drawing");}
+	if(mouse_down === 1) {
+		if (tool_pick === "pen"){
+			penTool("mouseMove", color_pick, e);
+		}else if (tool_pick == "eraser") {
+			console.log("Using Eraser")
+		//  This was old code that cleared space in order to allow for transparency, but the result of this is spotty.
+		//  ctx.clearRect((nowCoords('x', e) - 3), ((nowCoords('y', e) -3)), 6, 6);
+		//	lastCoords(this_x, this_y);
+		}
+	}
+}
+
+function onMouseUp(e) {
+	if (tool_pick === "pen") {
+		penTool("mouseUp", color_pick, e);
+	} else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
+		rectTool("mouseUp", color_pick, e);
+		}
 	last_x = undefined;
 	last_y = undefined;
 	mouse_down = 0;
 	console.log("Ending Pen Line");
+}
+
+function onMouseOut(e) {
+	mouse_down = 0;
+	last_x = undefined;
+	last_y = undefined;
+	console.log("Off Canvas.")
 }
 
 window.addEventListener("load", init, false);

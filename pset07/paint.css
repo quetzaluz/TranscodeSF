@@ -1,7 +1,7 @@
 /* Not sure how far I am going to go with this, but I am makingthe class before in effort to make multiple canvas layers. */
 
 .canvas_class {
-	
+
 }
 
 canvas {
@@ -38,7 +38,7 @@ canvas {
 		background: url(pencil.png);	
 }
 #rect_filled {
-		background: url(draw_rect.png);
+		background: url(rect_filled.png);
 }
 #rect_outline {
 		background: url(outline_rect.jpg);
