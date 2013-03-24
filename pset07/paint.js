@@ -19,7 +19,7 @@ var COLORS = [
 ];
 
 var TOOLS = [
-	"pen", "rect", "eraser", "clear"
+	"pen", "rect_filled", "eraser", "clear"
 ];
 
 function each(obj, f) {
@@ -66,6 +66,7 @@ function nowCoords(x_or_y, e) {
 		return e.clientY + document.body.scrollTop - e.target.offsetTop;
 	}
 }
+//Try just offset x and offset y from e.
 
 function offCanvas(e) {
 	mouse_down = 0;
@@ -90,6 +91,10 @@ function toolBarTools(e) {
 	console.log("Tool selected is now " + tool_pick);
 	if (tool_pick === "clear") { //This is the only tool called this way--others will be called in the functions below.
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for (var tool in TOOLS) {
+			div_tools[tool].style.border = "5px solid white";} 
+		div_tools['pen'].style.border = "5px solid cyan";
+		tool_pick = "pen";
 	}
 }
 
@@ -98,7 +103,7 @@ function startLine(e) {
 	if (tool_pick === "pen") {
 		console.log("Start Pen Line at " + (nowCoords('x', e)) + "," + (nowCoords('y', e)));
 		ctx.beginPath();
-	}else if (tool_pick === "rect") {
+	}else if (tool_pick === "rect_filled") {
 		rect_x1 = nowCoords('x', e);
 		rect_y1 = nowCoords('y', e);
 		console.log("Start Rectangle at " + nowCoords('x', e) + "," + nowCoords('y', e));
@@ -120,10 +125,11 @@ function linePath(e) {
 			ctx.lineTo(this_x, this_y);
 			ctx.stroke();
 			lastCoords(this_x, this_y);
-		}else if (tool_pick === "rect") {
+		}else if (tool_pick === "rect_filled") {
 			console.log("Drawing Rectangle")
-		}else if (tool_pick === "clear") {
-			tool_pick = "pen";
+		}else if (tool_pick == "eraser") {
+			console.log("Using Eraser")
+			ctx.clearRect((nowCoords('x', e) - 3), ((nowCoords('y', e) -3)), 6, 6);
 		}
 	}
 }
@@ -131,7 +137,7 @@ function linePath(e) {
 function endLine(e) {
 	if (tool_pick === "pen") {
 		ctx.closePath();
-	} else if (tool_pick === "rect") {
+	} else if (tool_pick === "rect_filled") {
 		rect_x2 = nowCoords('x', e);
 		rect_y2 = nowCoords('y', e);
 		rect_wid = rect_x2 - rect_x1;
@@ -142,16 +148,10 @@ function endLine(e) {
 		if (rect_hei < 0) {
 			rect_hei = rect_hei * -1;
 		}
-		if (rect_x1 < rect_x2 && rect_y1 > rect_y2) {
-			rect_y1 = rect_y2;
-		} else if (rect_x1 > rect_x2 && rect_y1 > rect_y2) {
-			rect_x1 = rect_x2;
-			rect_y1 = rect_y2;
-		} else if (rect_x1 > rect_x2 && rect_y1 < rect_y2) {
-			rect_x1 = rect_x2;
-		}
+		rect_x = Math.min(rect_x1, rect_x2);
+		rect_y = Math.min(rect_y1, rect_y2);
 		ctx.fillStyle = color_pick;
-		ctx.fillRect(rect_x1, rect_y1, rect_wid, rect_hei);
+		ctx.fillRect(rect_x, rect_y, rect_wid, rect_hei);
 	}
 	last_x = undefined;
 	last_y = undefined;

@@ -29,8 +29,11 @@ canvas {
 #pen {
 		background: url(pencil.png);	
 }
-#rect {
+#rect_filled {
 		background: url(draw_rect.png);
+}
+#rect_outline {
+		background: url(outline_rect.jpg);
 }
 #eraser {
 		background: url(eraser.png);
