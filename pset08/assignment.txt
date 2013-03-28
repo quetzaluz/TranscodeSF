@@ -1,0 +1,139 @@
+There are only five weeks of Transcode left.  You've learned about web tech all
+the way from Python and SQL through HTML and Javascript.  You may not feel like
+an expert in all of these pieces of technology or may feel much more confident
+about some of them than others, but we're confident that you've learned enough
+to make something a little bit bigger and a little bit more real.
+
+We'd like you to propose a web application project that you're interested in
+working on for the next few weeks.  This will be your chance to strengthen what
+you've learned and also go out and learn more practical skills by having a more
+specific goal to work towards.
+
+Ideally, you will finish something real enough that you could display on a
+github account to demonstrate your skills to others.
+
+
+* Step 0: Requirements.
+
+We want this to be something that utilizes what you've already learned.
+However, if you have an idea that you're really passionate about that doesn't
+use some or all of them, please follow what you want to do.
+
+Here are some general suggestions for the shape of this project:
+
+    - A Python web app using Flask that serves web pages
+    - CSS styling for those pages
+    - Store persistant data on the server using SQLAlchemy
+
+
+* Step 1: Come up with a general idea.
+
+Is there some web app that you use and like (e.g. twitter or flickr or Google
+Reader) that you think would be fun to make yourself or that you have ideas on
+how it could be better?
+
+Is there some web app for some hobby of yours that doesn't exist yet that you
+wish could?
+
+I know some of you have some thoughts already related to your work that you
+might want to consider doing, in particular some sort of inventory / purchasing
+web app or a wiki page converter.  Please feel free to suggest those sorts of
+projects here, as being able to work towards something "real" and getting
+feedback from us will help you better.
+
+Here are some suggestions to get you started.  If you are feeling stuck and
+can't come up with any great ideas, feel free to pick one of these.
+
+    * A telephone pictionary game.
+
+        "Telephone pictionary" works like the telephone game where you whisper
+        words around a circle, except you alternate words and pictures.  Pick a
+        set of users, then randomly order them.  The first user starts a game
+        with a sentence, and then the next user draws a picture (using canvas
+        and javascript), then the next user writes a sentence describing that
+        picture, and so on.  When you run out of users, then show the whole
+        chain of alternating pictures and words to all the users, and everybody
+        has a good laugh.  You can then share that link with other people.
+
+    * A simplified clone of twitter.
+
+        Make your own micro-blogging service.  Users can log in and post
+        short entries.  They can follow other users.  They can see a timeline
+        of the most recent posts from users they follow.
+
+    * Personal information / habit tracker.
+
+        http://dontbreakthechain.com/ is a motivational technique where you
+        remind yourself to do something every day that you have a hard time
+        doing.  You could make a web app where folks come up with tasks that
+        they want to do and you can display how well they are doing over time.
+
+        Another variation is maybe you like tracking things about yourself like
+        when you go to sleep or what your mood is on a scale of 1-5.  Having
+        an app that you can enter this information in and then display it over
+        time might be interesting.
+
+
+* Step 2: Take your idea and brainstorm features that you're going to need.
+
+Walk through a typical interaction and think about what pages a user might need
+to see.  For instance, a user gets to the front page with information, a user
+logs in, and that takes them to their profile page.  From that page, they can
+click links to go to some other pages.  And so on.  What's the minimum number
+of pages you might need?
+
+What kinds of data are you going to need to store on the server?
+
+Will users need to log in? If so, are you going to store passwords or use
+something like http://pythonhosted.org/Flask-OAuth/ to let users log in using
+their Facebook / twitter / etc accounts?
+
+
+* Step 3: Come up with a plan.
+
+You've got about 4-5 weeks to get this done.  So, consider how much time you
+have to spend each week.  We will help you refine this plan, but the purpose is
+to come up with goals so that if maybe you end up having less time (or more
+likely that it ends up being harder than you expected!) that you still end up
+with something functional by the end of Transcode.
+
+What can you do in the first two weeks? (a checkpoint goal)
+What do you want to get done in four weeks? (a final goal)
+If everything goes swimmingly, what would you love to get done? (a stretch goal)
+
+Here's an example for the telephone pictionary game:
+
+Checkpoint goal:
+
+    Users log in just by typing in their name.  Users can start new games.
+    Users can see a list of current games that they haven't participated in and
+    add a sentence or a picture to it.  Sentences and pictures are stored on
+    the server.  All pages are basic html and are functional but not pretty.
+    Reuse the code from the pset07 painting assignment for drawing pictures.
+
+Final goal:
+
+    When games are finished, there's a link that can be shared with anyone on
+    the web to see the whole chain of pictures and sentences.  Bootstrap is
+    used to make the app look better (http://twitter.github.com/bootstrap/).
+    Users can see a list of all the finished games they have participated in.
+
+Stretch goals:
+
+    Users log in using their twitter account.  The game is deployed on Heroku
+    so that it isn't just running on my own computer.  When games are done,
+    users are emailed using flask-mail.  Users can draw profile pictures that
+    will be displayed next to them.
+
+
+* Step 4: Email Naomi and enne
+
+Send Naomi and enne an email with three things:
+
+    (1) Explain your idea (and why you're interested in it!)
+    (2) A brainstormed feature list
+    (3) Your plan (checkpoint goal, final goal, stretch goal)
+
+
+Planning is the only assignment this week, so take some time to think about
+this.
