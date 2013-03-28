@@ -1,12 +1,16 @@
 There are only five weeks of Transcode left.  You've learned about web tech all
 the way from Python and SQL through HTML and Javascript.  You may not feel like
 an expert in all of these pieces of technology or may feel much more confident
-about some of them than others.
+about some of them than others, but we're confident that you've learned enough
+to make something a little bit bigger and a little bit more real.
 
 We'd like you to propose a web application project that you're interested in
 working on for the next few weeks.  This will be your chance to strengthen what
 you've learned and also go out and learn more practical skills by having a more
 specific goal to work towards.
+
+Ideally, you will finish something real enough that you could display on a
+github account to demonstrate your skills to others.
 
 
 * Step 0: Requirements.
@@ -15,7 +19,7 @@ We want this to be something that utilizes what you've already learned.
 However, if you have an idea that you're really passionate about that doesn't
 use some or all of them, please follow what you want to do.
 
-Here are some general requirements:
+Here are some general suggestions for the shape of this project:
 
     - A Python web app using Flask that serves web pages
     - CSS styling for those pages
@@ -97,7 +101,6 @@ What can you do in the first two weeks? (a checkpoint goal)
 What do you want to get done in four weeks? (a final goal)
 If everything goes swimmingly, what would you love to get done? (a stretch goal)
 
-
 Here's an example for the telephone pictionary game:
 
 Checkpoint goal:
@@ -106,6 +109,7 @@ Checkpoint goal:
     Users can see a list of current games that they haven't participated in and
     add a sentence or a picture to it.  Sentences and pictures are stored on
     the server.  All pages are basic html and are functional but not pretty.
+    Reuse the code from the pset07 painting assignment for drawing pictures.
 
 Final goal:
 
