@@ -1,0 +1,50 @@
+First of all, I want to say great job overall on this pset.  When it works, it's
+simple, it's clear to use, and it's good.
+
+That said, here are a few pieces of feedback I have for you:
+
+* I could not get your program to run until I deleted the lines that looked for
+  flashes.html in each of your two included templates.  Did you perhaps just
+  forget to check in this file?  Hint: "git add <filepath>" is what you use to
+  add a new file to your repo; "git commit -a" won't get new files
+  automatically.  You can use "git status" to check on whether you've got this
+  situation.  I suspect your program will be even awesomer when I can see it
+  full-force.
+
+* You've got a lot of hardcoded styles, like so:
+    {% elif run.0 is odd %}
+    <tr style="background-color:#A9E2F3;">
+  It would be cleaner to do something like this:
+    <tr class="{% run.0 %}>
+  (Assign the "odd" class to odd rows)
+  And then have CSS like so:
+    tr .odd {
+      background-color: #A9E2F3;
+    }
+
+* SQLAlchemy's row objects are indexable by both name and number.  This allows
+  you to do things like so:
+
+    run_list.append(row)
+
+  instead of manually building a list with each column in the row.  Furthermore,
+  in your template, you can just refer to the columns by name, like so:
+
+    <td>{{run.id}}</td>
+    <td>{{run.name}}</td>
+
+  ... etc.  This makes for clearer code in both Python and HTML.
+
+* Try to avoid really long lines.  You can use parentheses to force Python to
+  accept multi-line statements without loss of clarity.  The eye can more easily
+  read each step one at a time in a long chain of method calls.  For example:
+
+    for row in (select([tests.c.id, tests.c.name, tests.c.status, tests.c.run, runs.c.ended])
+                .where(and_(tests.c.name == str(test_name), tests.c.run == runs.c.id))
+                .order_by(desc(runs.c.ended))
+                .execute()):
+  Instead of:
+
+    for row in (select([tests.c.id, tests.c.name, tests.c.status, tests.c.run, runs.c.ended]).where(and_(tests.c.name == str(test_name), tests.c.run == runs.c.id)).order_by(desc(runs.c.ended)).execute()):
+
+* In general, good job!
