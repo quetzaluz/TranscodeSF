@@ -32,7 +32,7 @@ db.create_all()
 WORDS1 = ["checking", "making sure", "poking", "is", "ascertaining", ""]
 
 WORDS2 = ["code", "network", "llama", "program", "main board", "laser",
-          "blaster", "spline", "module", "archetecture", "computer",
+          "blaster", "spline", "module", "architecture", "computer",
           "screen", "system", "payment", "job", "fix", "duct tape"]
 
 WORDS3 = ["halts", "works", "ok", "good", "satisfactory",

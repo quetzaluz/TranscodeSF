@@ -28,3 +28,15 @@ button:active {
 	position:relative;
 	top:1px;
 }
+
+#odd_row {
+    background-color: #A9E2F3;
+}
+
+#first_row {
+    background-color: #5858FA;
+}
+
+#even_row {
+    background-color: #EFF8FB;
+}

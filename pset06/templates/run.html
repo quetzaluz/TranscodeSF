@@ -16,23 +16,23 @@
   </table>
   <div class="table1">
     <table>
-      <tr style="background-color:#5858FA;">
+      <tr id="first_row">
 	<td><b>Test ID</b></td>
 	<td><b>Test Name</b></td>
 	<td><b>Status</b></td>
       </tr>
       {% for test in test_list %}
-      {% if test.0 is even %}
-      <tr style="background-color:#EFF8FB;">
-	{% elif test.0 is odd %}
-      <tr style="background-color:#A9E2F3;">
+      {% if test.id is even %}
+      <tr id="even_row">
+	{% elif test.id is odd %}
+      <tr id="odd_row">
 	{% endif %}
-	<td>{{test.0}}</td>
-	<td><a href="../test/{{test.1}}">{{test.1}}</a></td>
-	{% if test.2 == 'PASS' %}
-	<td><font color="green">{{test.2}}</font></td>
-	{% elif test.2 == 'FAIL' %}
-	<td><font color="red">{{test.2}}</font></td>
+	<td>{{test.id}}</td>
+	<td><a href="../test/{{test.name}}">{{test.name}}</a></td>
+	{% if test.status == 'PASS' %}
+	<td><font color="green">{{test.status}}</font></td>
+	{% elif test.status == 'FAIL' %}
+	<td><font color="red">{{test.status}}</font></td>
 	{% endif %}
       </tr>
       {% endfor %}

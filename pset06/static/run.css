@@ -10,15 +10,14 @@ body {
     padding: 10px;
 }
 
-.tr navy {
-    background-color: #0B173B;
-    text-color: white;
+.tr odd_row {
+    background-color: #A9E2F3;
 }
 
-.tr blue {
+.tr first_row {
     background-color: #5858FA;
 }
 
-.tr lblue {
-    background-color: #CEE3F6;
+.tr even_row {
+    background-color: #EFF8FB;
 }

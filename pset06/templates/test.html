@@ -15,28 +15,28 @@
     <p>{{previous_status}}</p>
         <div class="table1">
 	  <table>
-	    <tr style="background-color:#5858FA;">
-	      <td><b>Test ID</b></td> <!-- Will work on styling better later -->
+	    <tr id="first_row">
+	      <td><b>Test ID</b></td> 
 	      <td><b>Test Name</b></td>
 	      <td><b>Status</b></td>
 	      <td><b>Run Number</b></td>
 	      <td><b>Run End Time</b></td>
 	    </tr>
 	    {% for run in run_list %}
-	    {% if run.0 is even %}
-	    <tr style="background-color:#EFF8FB;">
-	    {% elif run.0 is odd %}
-	    <tr style="background-color:#A9E2F3;">
+	    {% if run.run is even %}
+	    <tr id="even_row">
+	    {% elif run.run is odd %}
+	    <tr id="odd_row">
 	    {% endif %}
-	    <td>{{run.0}}</td>
-	    <td>{{run.1}}</td>
-	    {% if run.2 == 'PASS' %}
-	    <td><font color="green">{{run.2}}</font></td>
-	    {% elif run.2 == 'FAIL' %}
-	    <td><font color="red">{{run.2}}</font></td>
+	    <td>{{run.id}}</td>
+	    <td>{{run.name}}</td>
+	    {% if run.status == 'PASS' %}
+	    <td><font color="green">{{run.status}}</font></td>
+	    {% elif run.status == 'FAIL' %}
+	    <td><font color="red">{{run.status}}</font></td>
 	    {% endif %}
-	    <td><a href="../run/{{run.3}}">{{run.3}}</a></td>
-	    <td>{{run.4}}</td>
+	    <td><a href="../run/{{run.run}}">{{run.run}}</a></td>
+	    <td>{{run.ended}}</td>
 	    </tr>
 	{% endfor %}
       </table>
