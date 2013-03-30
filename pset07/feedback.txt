@@ -1,0 +1,54 @@
+enne:
+
+Great work, as usual!  I love that you highlight the color and tool you're
+using.  That's nice!
+
+The eraser tool doesn't work, but it looks like I just looked at this
+assignment maybe while you were in the middle of improving it, since I see your
+comment block.
+
+You seem to have a great sense of how to get stuff done.  I've got a few
+suggestions that you might want to think about in terms of making your code a
+little bit more elegant.
+
+One trick that a lot of folks do when writing web apps is that rather than
+setting styles directly from JavaScript, they add or remove classes from
+elements.  What this lets you do is that if you have a "highlight" class for
+the highlighted tool (as a purely hypothetical example :P), then you can
+control what that means from CSS, and easily change it later without touching
+code.  This separates out the implementation (add/remove highlights) from the
+style (what does a highlight look like).
+
+See also: http://stackoverflow.com/questions/195951/change-an-elements-css-class-with-javascript
+
+This is somewhat of a trivial suggestion, but I have a general rule where I
+feel like boolean flags to functions that control what they do is a little bit
+of a "code smell".  I would probably make nowCoords(x_or_y, e) into two
+functions, nowCoordX(e) and nowCoordY(e).  It's even more obvious from the
+caller what you need to do.
+
+You have a *lot* of conditionals.  Your onMouseDown function checks if the tool
+is a pen or a rect and then calls another function that has a conditional that
+decides what to do.  If you have a lot of tools like this, one thing you might consider is something like this
+
+var tools = {
+    pen: {
+        mousedown: pen_mousedown,
+        mousemove: pen_mousemove,
+        mouseup: pen_mouseup,
+    },
+    rect: {
+        mousedown: rect_mousedown,
+        mouseup: rect_mouseup,
+    },
+};
+
+The intended usage for this would be that you could just look up the correct
+function based on the current tool and then call it.  This is a little bit more
+of a "data-driven" way to route events to certain functions.  This would also
+let you do an alternate approach of registering these functions as event
+handlers directly when the tool is clicked, rather than going through the
+indirection of routing to the correct tool handler during mouse events.
+
+What you did is perfectly reasonable, but I just wanted to give you an
+alternate suggestion of how else you might go about this.
