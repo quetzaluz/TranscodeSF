@@ -20,7 +20,8 @@ class EvilATM(object):
               rounded up to the nearest whole dollar.
             * As part of a temporary promotion for this bank's 17th
               anniversary, withdrawing exactly $17 has no service fee.
-    """
+STUDENT NOTE: The above docstring and the code below states rules for	withdrawing more than $50 and for withdrawing less than $50. It is ambiguous as to what should happen if the user withdraws exactly $50. This resulted in an UnboundLocalError when attempting to withdraw $50. I've modified the statement "elif amount > 50:" around line 63 to read "elif amount >= 50:" to correct this.
+		"""
     def __init__(self):
         # FIXME: Maybe this init function should do something...
         pass
@@ -58,7 +59,7 @@ class EvilATM(object):
 
             if amount == 17:  # Temporary promotion fee cancellation!
                 fee = 0
-        elif amount > 50:
+        elif amount >= 50:
             fee = 0.1 * amount
             total = amount + fee
             # FIXME: Oops, I was in a hurry and copy-pasted this code!

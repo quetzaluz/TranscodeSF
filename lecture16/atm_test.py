@@ -36,3 +36,9 @@ class ATMUnitTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+"""NOTES ABOUT OTHER BUGS TO CATCH:
+	- Printing account.amount returns the number with only one decimal space.
+	- Same goes for printing 'withdrawn' and 'fee'. Withdrawn is a float with one decimal space and 'fee' seems to be a whole integer.
+	- 
+	"""
