@@ -22,6 +22,27 @@ var TOOLS = [
 	"pen", "rect_filled", "rect_outline", "eraser", "clear"
 ];
 
+var tool_handler = {
+  "pen": {
+    "mousedown": penMouseDown,
+    "mousemove": penMouseMove,
+    "mouseup": penMouseUp
+  },
+  "rect_filled": {
+		"mousedown": rectMouseDown,
+		"mouseup": rectMouseUp
+	},
+	"rect_outline": {
+		"mousedown": rectMouseDown,
+		"mouseup": rectMouseUp
+	},
+	"eraser": {
+		"mousedown": eraserMouseDown,
+		"mousemove": eraserMouseMove,
+		"mouseup": eraserMouseUp
+	}
+};
+
 function each(obj, f) {
   for (var key in obj) {
     if (obj.hasOwnProperty(key)) {
@@ -37,14 +58,17 @@ function init() {
   ctx = canvas.getContext('2d'); 
   for (var color in COLORS) {
 		div_colors[color].addEventListener("click", toolBarColors);
-		div_colors[color].style.border = "5px solid white";
+		div_colors[color].className += " no_highlight";
 	}
 	for (var tool in TOOLS) {
 		div_tools[tool].addEventListener("click", toolBarTools);
-		div_tools[tool].style.border = "5px solid white";
+		div_tools[tool].className += " no_highlight";
 	}
-	div_colors['black'].style.border = "5px solid cyan";
-	div_tools['pen'].style.border = "5px solid cyan";
+	div_colors['black'].className = div_colors['black'].className.replace( /(?:^|\s)no_highlight(?!\S)/g , '' );
+	div_colors['black'].className += " highlight";
+	div_tools['pen'].className = div_tools['pen'].className.replace
+      ( /(?:^|\s)no_highlight(?!\S)/g , '' );
+	div_tools['pen'].className += " highlight";
 	canvas.addEventListener('mousedown', onMouseDown);
 	canvas.addEventListener('mouseup', onMouseUp);
 	canvas.addEventListener('mousemove', onMouseMove);
@@ -58,27 +82,37 @@ function lastCoords(this_x, this_y) {
   last_y = this_y;
 	}
 
-function nowCoords(x_or_y, e) {
-	if (x_or_y === 'x') {
-		return e.clientX + document.body.scrollLeft - e.target.offsetLeft;
-	}
-	if (x_or_y === 'y') {
-		return e.clientY + document.body.scrollTop - e.target.offsetTop;
-	}
-} //Try just offsetX and offsetY from e.
+function nowCoordX(e) {
+	return e.offsetX;
+}
+
+function nowCoordY(e) {
+	return e.offsetY;
+}
+
+//Below is a helper function for clearing existing toolbar element highlights. This is called before changing highlight classes.
+
+function clearHighlights(e) {
+	e.className = e.className.replace(/(?:^|\s)highlight(?!\S)/g , '' );
+	e.className = e.className.replace(/(?:^|\s)no_highlight(?!\S)/g , '' );
+}
 
 function toolBarColors(e) {
 	for (var color in COLORS) {
-		div_colors[color].style.border = "5px solid white";} 
-	e.target.style.border = "5px solid cyan";
+		clearHighlights(div_colors[color]);
+		div_colors[color].className += " no_highlight";} 
+	clearHighlights(e.target);
+	e.target.className += " highlight";
 	color_pick = e.target.id;
 	console.log("Tool color is now " + color_pick);
 }
 
 function toolBarTools(e) {
 	for (var tool in TOOLS) {
-		div_tools[tool].style.border = "5px solid white";}
-	e.target.style.border = "5px solid cyan";
+		clearHighlights(div_tools[tool]);
+		div_tools[tool].className += " no_highlight";}
+	clearHighlights(e.target);
+	e.target.className += " highlight";
 	tool_pick = e.target.id;
 	console.log("Tool selected is now " + tool_pick);
 	if (tool_pick === "clear") { //This is the only tool called in toolbar
@@ -87,91 +121,96 @@ function toolBarTools(e) {
 }
 
 //The functions below handle tool behavior.
-function penTool (click_stage, color_pick, e) {
-	if (click_stage === "mouseDown"){
-		console.log("Start Pen Line at " + (nowCoords('x', e)) + "," + (nowCoords('y', e)));
-		ctx.beginPath();
-	} else if(click_stage === "mouseMove"){
-		console.log("Drawing Pen Line.")
-		ctx.lineWidth = 3;
-		ctx.strokeStyle = color_pick;
-		ctx.beginPath();
-		ctx.moveTo(last_x, last_y);
-		ctx.lineTo(nowCoords('x', e), nowCoords('y', e));
-		ctx.stroke();
-		lastCoords(nowCoords('x', e), nowCoords('y', e));
-	} else if(click_stage === "mouseUp"){
-		ctx.closePath();
-	}
+
+function penMouseDown (e, color_pick) {
+	console.log("Start Pen Line at " + (nowCoordX(e)) + "," + (nowCoordY(e)));
+	ctx.beginPath();
 }
-function rectTool (click_stage, color_pick, e) {
-	if (click_stage === "mouseDown") {
-		rect_x1 = nowCoords('x', e);
-		rect_y1 = nowCoords('y', e);
-		console.log("Start Rectangle at " + nowCoords('x', e) + "," + nowCoords('y', e));
-	} else if (click_stage === "mouseMove") {
-	} else if (click_stage === "mouseUp") {
-		rect_x2 = nowCoords('x', e);
-		rect_y2 = nowCoords('y', e);
-		rect_wid = Math.max(rect_x1, rect_x2) - Math.min (rect_x1, rect_x2);
-		rect_hei = Math.max(rect_y1, rect_y2) - Math.min (rect_y1, rect_y2);
-		rect_x = Math.min(rect_x1, rect_x2);
-		rect_y = Math.min(rect_y1, rect_y2);
-		if (tool_pick === "rect_filled") {
-			ctx.fillStyle = color_pick;
-			ctx.fillRect(rect_x, rect_y, rect_wid, rect_hei);
-		} else if (tool_pick === "rect_outline") {
-			ctx.strokeStyle = color_pick;
-			ctx.lineWidth = 3;
-			ctx.strokeRect(rect_x, rect_y, rect_wid, rect_hei);
-		}
+
+function penMouseMove (e, color_pick) {
+	console.log("Drawing Pen Line.")
+	ctx.lineWidth = 3;
+	ctx.strokeStyle = color_pick;
+	ctx.beginPath();
+	ctx.moveTo(last_x, last_y);
+	ctx.lineTo(nowCoordX(e), nowCoordY(e));
+	ctx.stroke();
+	lastCoords(nowCoordX(e), nowCoordY(e));
+}
+
+function penMouseUp (e, color_pick) {
+	ctx.closePath();
+}
+
+function rectMouseDown (e, color_pick) {
+	rect_x1 = nowCoordX(e);
+	rect_y1 = nowCoordY(e);
+	console.log("Start Rectangle at " + nowCoordX(e) + "," + nowCoordY(e));
+}
+
+function rectMouseUp (e, color_pick) {
+	rect_x2 = nowCoordX(e);
+	rect_y2 = nowCoordY(e);
+	rect_wid = Math.max(rect_x1, rect_x2) - Math.min (rect_x1, rect_x2);
+	rect_hei = Math.max(rect_y1, rect_y2) - Math.min (rect_y1, rect_y2);
+	rect_x = Math.min(rect_x1, rect_x2);
+	rect_y = Math.min(rect_y1, rect_y2);
+	if (tool_pick === "rect_filled") {
+		ctx.fillStyle = color_pick;
+		ctx.fillRect(rect_x, rect_y, rect_wid, rect_hei);
+	} else if (tool_pick === "rect_outline") {
+		ctx.strokeStyle = color_pick;
+		ctx.lineWidth = 3;
+		ctx.strokeRect(rect_x, rect_y, rect_wid, rect_hei);
 	}
 }
 
-function eraserTool (e) {
-	//TODO: fill in later
+function eraserMouseDown (e, color_pick) {
+	penMouseDown(e, color_pick);
 }
+
+function eraserMouseMove (e, color_pick) {
+	old_color = color_pick;
+	color_pick = 'white';
+	penMouseMove(e, color_pick);
+}
+
+function eraserMouseUp (e, color_pick) {
+	penMouseUp(e, color_pick);
+	color_pick = old_color;
+	old_color = "undefined";
+}
+
+		//  This was old code that cleared space in order to allow for transparency, but the result of this is spotty.
+		//  ctx.clearRect((nowCoords('x', e) - 3), ((nowCoords('y', e) -3)), 6, 6);
+		//	lastCoords(this_x, this_y);
 
 function clearTool (e) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for (var tool in TOOLS) {
-			div_tools[tool].style.border = "5px solid white";} 
-		div_tools['pen'].style.border = "5px solid cyan";
+			clearHighlights(div_tools[tool]);} 
+		div_tools['pen'].className += " highlight";
 		tool_pick = "pen";
 }
+
 //The three functions below enable click functionality on the canvas.
 function onMouseDown(e) {
 	mouse_down = 1;
-	if (tool_pick === "pen") {
-		penTool("mouseDown", color_pick, e);
-	}else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
-		rectTool("mouseDown", color_pick, e);
-	}
+	tool_handler[tool_pick]['mousedown'](e, color_pick);
 }
 
 function onMouseMove(e) {
-  this_x = nowCoords('x', e);
-	this_y = nowCoords('y', e);
+  this_x = nowCoordX(e);
+	this_y = nowCoordY(e);
 	if(mouse_down === 0) {
 		console.log("Not Drawing");}
 	if(mouse_down === 1) {
-		if (tool_pick === "pen"){
-			penTool("mouseMove", color_pick, e);
-		}else if (tool_pick == "eraser") {
-			console.log("Using Eraser")
-		//  This was old code that cleared space in order to allow for transparency, but the result of this is spotty.
-		//  ctx.clearRect((nowCoords('x', e) - 3), ((nowCoords('y', e) -3)), 6, 6);
-		//	lastCoords(this_x, this_y);
-		}
+		tool_handler[tool_pick]['mousemove'](e, color_pick);
 	}
 }
 
 function onMouseUp(e) {
-	if (tool_pick === "pen") {
-		penTool("mouseUp", color_pick, e);
-	} else if (tool_pick === "rect_filled" || tool_pick === "rect_outline") {
-		rectTool("mouseUp", color_pick, e);
-		}
+	tool_handler[tool_pick]['mouseup'](e, color_pick);
 	last_x = undefined;
 	last_y = undefined;
 	mouse_down = 0;

@@ -55,6 +55,15 @@ canvas {
 	height: 32px;
 	float: left;
 }
+
+.no_highlight {
+	border: 5px solid white;
+}
+
+.highlight {
+	border: 5px solid cyan;
+}
+
 .toolbar {
     float: none;
     width: 600px;
