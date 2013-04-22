@@ -1,4 +1,4 @@
-/* Not sure how far I am going to go with this, but I am makingthe class before in effort to make multiple canvas layers. */
+/* Not sure how far I am going to go with this, but I am making the class below in effort to make multiple canvas layers. */
 
 .canvas_class {
 
@@ -78,9 +78,21 @@ canvas {
 .tool {
 		width: 32px;
 		height: 32px;
-		font-family: "Arial", Arial, sans-serif;
-		font-size: 10px;
 		float: left;
+}
+
+.size {
+		position: relative;
+		width: 32px;
+		height: 32px;
+		float: left;
+}
+
+.size canvas {
+	position: absolute;
+	top: 0; 
+	left: 0;
+	z-index: 0; 
 }
 
 #paint {

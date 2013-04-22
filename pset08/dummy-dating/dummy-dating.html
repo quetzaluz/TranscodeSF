@@ -1,0 +1,66 @@
+<head>
+  <title>dummy-dating</title>
+</head>
+
+<body>
+  {{> base}}
+</body>
+
+<template name="base">
+  {{loginButtons}}
+  <div class="linkBar">
+    <form>
+      <input type="button" id="editProfile" value="Edit My Profile"></input>
+	  <input type="button" id="viewProfile" value="View My Profile"></input>
+	  <input type="button" id="searchProfiles" value="Search Profiles"></input>
+	</form>
+  </div>
+  {{#if loggedIn}} 
+  {{#if pageIsEditProfile}}
+    {{> editProfile}}
+  {{else}} 
+    {{#if pageIsViewProfile}}
+      {{> viewProfile}}
+  {{else}} 
+     {{#if pageIsSearchProfiles}}
+	   {{> searchProfiles}}
+  {{/if}}{{/if}}{{/if}}
+  {{else}}
+  <h3>{{greeting}}</h3>
+  <h5>{{askForLogin}}</h5><br>
+  {{/if}}
+</template>
+
+
+<template name="editProfile">
+  {{#unless hasMadeProfile}}
+    <p>{{greetingNewProfile}}</P>
+  {{/unless}}
+  <p>{{greeting2}}</p>
+  <form>
+    <table>
+    <tr><td>Name:</td><td><input type="text" id="name"></td></tr>
+	<tr><td>Gender:</td><td><input type="radio" id="gender" value="Male"> Male 
+	<input type="radio" id="gender" value="Female"> Female <br>
+	<input type="radio" id="gender" value="Other"> Other</td></tr>
+	<tr><td>Age:</td><td><input type="number" id="age"> </td></tr>
+	<tr><td>Build:</td><td><input type="radio" id="build"> Not Sexy <br>
+	<input type="radio" id="build"> Medium Sexy <br>
+	<input type="radio" id="build"> Super Sexy </td></tr>
+	<tr><td>About Me:</td><td><input type="text" id="aboutMe"> </td></tr>
+	<tr><td>Turn Ons:</td><td><input type="text" id="turnOns"> </td> </tr>
+	<tr><td>Turn Offs:</td><td><input type="text" id="turnOffs"> </td> </tr>
+	<tr><td></td><td><input type="button" id="createProfile" value="Update My Profile"></input></td></tr>
+  </table>
+  </form>
+  
+</template>
+
+<!-- Try to figure out how to make this template able to take userId and return the profile for that user -->
+<template name="viewProfile">
+  This page will allow you to view your profile.
+</template>
+
+<template name="searchProfiles">
+  This page will allow you to search profiles.
+</template>
