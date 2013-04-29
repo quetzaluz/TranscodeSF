@@ -11,7 +11,7 @@
   <div class="linkBar">
     <form>
       <input type="button" id="editProfile" value="Edit My Profile"></input>
-	  <input type="button" id="viewProfile" value="View My Profile"></input>
+	  <input type="button" id="viewMyProfile" value="View My Profile"></input>
 	  <input type="button" id="searchProfiles" value="Search Profiles"></input>
 	</form>
   </div>
@@ -19,8 +19,8 @@
   {{#if pageIsEditProfile}}
     {{> editProfile}}
   {{else}} 
-    {{#if pageIsViewProfile}}
-      {{> viewProfile}}
+    {{#if pageIsViewMyProfile}}
+      {{> viewMyProfile}}
   {{else}} 
      {{#if pageIsSearchProfiles}}
 	   {{> searchProfiles}}
@@ -33,31 +33,47 @@
 
 
 <template name="editProfile">
-  {{#unless hasMadeProfile}}
-    <p>{{greetingNewProfile}}</P>
-  {{/unless}}
-  <p>{{greeting2}}</p>
-  <form>
+  {{#if hasMadeProfile}}
+    <p>{{greetingOld}}</p>
+		<form>
     <table>
     <tr><td>Name:</td><td><input type="text" id="name"></td></tr>
-	<tr><td>Gender:</td><td><input type="radio" id="gender" value="Male"> Male 
-	<input type="radio" id="gender" value="Female"> Female <br>
-	<input type="radio" id="gender" value="Other"> Other</td></tr>
+	<tr><td>Gender:</td><td><input type="radio" name="gender" id="gender" value="Male"> Male 
+	<input type="radio" name="gender" id="gender" value="Female"> Female <br>
+	<input type="radio" name="gender" id="gender" value="Other"> Other</td></tr>
 	<tr><td>Age:</td><td><input type="number" id="age"> </td></tr>
-	<tr><td>Build:</td><td><input type="radio" id="build"> Not Sexy <br>
-	<input type="radio" id="build"> Medium Sexy <br>
-	<input type="radio" id="build"> Super Sexy </td></tr>
+	<tr><td>Build:</td><td><input type="radio" name="build" id="build"> Not Sexy <br>
+	<input type="radio" name="build" id="build"> Medium Sexy <br>
+	<input type="radio" name="build" id="build"> Super Sexy </td></tr>
 	<tr><td>About Me:</td><td><input type="text" id="aboutMe"> </td></tr>
 	<tr><td>Turn Ons:</td><td><input type="text" id="turnOns"> </td> </tr>
 	<tr><td>Turn Offs:</td><td><input type="text" id="turnOffs"> </td> </tr>
-	<tr><td></td><td><input type="button" id="createProfile" value="Update My Profile"></input></td></tr>
-  </table>
+  <tr><td></td><td><input type="button" id="updateProfile" value="Update My Profile"></input></td></tr>
+	</table>
+	{{else}}
+	  <p>{{greetingNew}}</p>
+		<form>
+    <table>
+    <tr><td>Name:</td><td><input type="text" id="name"></td></tr>
+	<tr><td>Gender:</td><td><input type="radio" name="gender" id="gender" value="Male"> Male 
+	<input type="radio" name="gender" id="gender" value="Female"> Female <br>
+	<input type="radio" name="gender" id="gender" value="Other"> Other</td></tr>
+	<tr><td>Age:</td><td><input type="number" id="age"> </td></tr>
+	<tr><td>Build:</td><td><input type="radio" name="build" id="build"> Not Sexy <br>
+	<input type="radio" name="build" id="build"> Medium Sexy <br>
+	<input type="radio" name="build" id="build"> Super Sexy </td></tr>
+	<tr><td>About Me:</td><td><input type="text" id="aboutMe"> </td></tr>
+	<tr><td>Turn Ons:</td><td><input type="text" id="turnOns"> </td> </tr>
+	<tr><td>Turn Offs:</td><td><input type="text" id="turnOffs"> </td> </tr>
+    <tr><td></td><td><input type="button" id="createProfile" value="Create My Profile"></input></td></tr>
+	</table>
+  {{/if}}
   </form>
   
 </template>
 
 <!-- Try to figure out how to make this template able to take userId and return the profile for that user -->
-<template name="viewProfile">
+<template name="viewMyProfile">
   This page will allow you to view your profile.
 </template>
 
