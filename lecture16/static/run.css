@@ -1,0 +1,23 @@
+body {
+    font-family: "Lucida Console", monospace;
+}
+
+.table1 table {
+    border: 1px solid black;
+}
+
+.table1 table td {
+    padding: 10px;
+}
+
+.tr odd_row {
+    background-color: #A9E2F3;
+}
+
+.tr first_row {
+    background-color: #5858FA;
+}
+
+.tr even_row {
+    background-color: #EFF8FB;
+}

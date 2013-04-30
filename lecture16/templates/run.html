@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Run #{{run_num}}  Report</title>
+    <link rel="stylesheet" type="text/css" href="../static/reporter.css"/>
+  </head>
+{% extends "flashes.html" %}
+{% block body %}
+  <table style="width: 100%">
+      <h1>Test Run #{{run_num}} Report</h1>
+      <form method="POST" action="/run_test">
+      <button type="submit">Run New Tests</button><br>
+      </form>
+      <p>Start Time: {{run_started}}</p>
+      <p>End Time: {{run_ended}}</p>
+  </table>
+  <div class="table1">
+    <table>
+      <tr id="first_row">
+	<td><b>Test ID</b></td>
+	<td><b>Test Name</b></td>
+	<td><b>Status</b></td>
+      </tr>
+      {% for test in test_list %}
+      {% if test.id is even %}
+      <tr id="even_row">
+	{% elif test.id is odd %}
+      <tr id="odd_row">
+	{% endif %}
+	<td>{{test.id}}</td>
+	<td><a href="../test/{{test.name}}">{{test.name}}</a></td>
+	{% if test.status == 'PASS' %}
+	<td><font color="green">{{test.status}}</font></td>
+	{% elif test.status == 'FAIL' %}
+	<td><font color="red">{{test.status}}</font></td>
+	{% endif %}
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+{% endblock %}
+</html>
