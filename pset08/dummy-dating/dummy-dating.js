@@ -1,4 +1,17 @@
-Profiles = new Meteor.Collection('Profiles');
+Profile = function (doc) {
+  _.extend(this, doc);
+};
+
+_.extend(Profile.prototype, {
+  getValues: function () {
+  return {name: this.name, gender: this.gender, age: this.age, build: this.build, aboutMe: this.aboutMe, turnOns: this.turnOns, turnOffs: this.turnOffs}
+  }
+});
+
+
+Profiles = new Meteor.Collection('Profiles', {
+  transform: function (doc) { return new Profile(doc); }
+});
 	
 var ProtonRouter = Backbone.Router.extend({
 	routes: {
@@ -129,7 +142,11 @@ if (Meteor.isClient) {
 		  console.log("Creating new profile...")
 		}
 	});
-
+  
+	//values for displaying a profile for the given userId
+  Template.viewProfile.value = function () {
+	  return Profiles.findOne({userId: Session.get('profile')}) 
+  }
 	
 }
 

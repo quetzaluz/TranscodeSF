@@ -20,7 +20,7 @@
     {{> editProfile}}
   {{else}} 
     {{#if pageIsViewMyProfile}}
-      {{> viewMyProfile}}
+      {{> viewProfile}}
   {{else}} 
      {{#if pageIsSearchProfiles}}
 	   {{> searchProfiles}}
@@ -73,8 +73,16 @@
 </template>
 
 <!-- Try to figure out how to make this template able to take userId and return the profile for that user -->
-<template name="viewMyProfile">
-  This page will allow you to view your profile.
+<template name="viewProfile">
+  <table>
+    <tr><td>Name:</td><td>{{value.name}}</td></tr>
+    <tr><td>Gender:</td><td>{{value.gender}}</td></tr>
+    <tr><td>Age:</td><td>{{value.age}}</td></tr>
+    <tr><td>Build:</td><td>{{value.build}} </td></tr>
+    <tr><td>About Me:</td><td>{{value.aboutMe}}</td></tr>
+    <tr><td>Turn Ons:</td><td>{{value.turnOns}}</td> </tr>
+    <tr><td>Turn Offs:</td><td>{{value.turnOffs}}</td> </tr>
+  </table>
 </template>
 
 <template name="searchProfiles">
